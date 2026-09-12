@@ -10,7 +10,7 @@
 | Resend | `notify.neylo.xyz`, domain `7d157752-07fd-4d41-a584-d2da09b505b0` | Verified domain and sending-only key restricted to this subdomain |
 | Namecheap | `neylo.xyz` | Registration retained; no transfer |
 
-The inspected Workers Free allowance is 100,000 requests/day, 10 ms CPU/request, 50 subrequests/request. This is a quota-limited launch deployment. No payment or automatic plan upgrade was authorized. Supabase and email limits can throttle bursts; do not disable verification or invent successful signup on throttling. Supabase SMTP is currently limited to 30 messages/hour globally and 60 seconds per recipient. A 100-account burst therefore needs pacing or an explicit reviewed limit change within provider allowances. No paid backup, uptime monitor, or guaranteed service level is claimed.
+The inspected Workers Free allowance is 100,000 requests/day, 10 ms CPU/request, 50 subrequests/request. This is a quota-limited launch deployment. No payment or automatic plan upgrade was authorized. Supabase and email limits can throttle bursts; do not disable verification or invent successful signup on throttling. Supabase SMTP is configured for 100 messages/hour globally and 60 seconds per recipient. Resend Free allows 100/day and 3,000/month across this provider account; 4 emails had been used at the final inspection (96 daily remaining). These are email counts, including retries and sign-in codes, not unique-account quotas. Pay-as-you-go remains disabled. No paid backup, uptime monitor, or guaranteed service level is claimed.
 
 ## DNS and transport
 
