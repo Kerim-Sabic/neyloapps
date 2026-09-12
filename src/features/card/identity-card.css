@@ -1,0 +1,29 @@
+/* The unclipped shell preserves real depth; only the sapphire surface clips its light. */
+.card-stage{position:relative}
+.card-stage::before{content:"";position:absolute;inset:auto 10% -25px;height:34px;border-radius:50%;background:#0009;filter:blur(15px);pointer-events:none}
+.card-stage .card-reveal,.card-levitate{transform-style:preserve-3d}
+.card-stage .identity-card{overflow:visible;background:#0b1a32;border-color:#638cba;box-shadow:0 3px 0 #0a1427,0 5px 0 #1c3352,0 7px 1px #040b18,0 30px 55px -24px #000b;transform-style:preserve-3d}
+.card-stage .identity-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;background:linear-gradient(135deg,#587899,#162e4d 30%,#0b172d 65%,#537399);border:1px solid #6481a9;transform:translateZ(-6px) translateY(4px);pointer-events:none}
+.card-stage .card-material{z-index:0;transform:translateZ(0);background:radial-gradient(ellipse at 3% 0%,#8eaec857,transparent 44%),radial-gradient(ellipse at 100% 88%,#284b874f,transparent 50%),linear-gradient(122deg,#283f5f 0%,#1e385d 23%,#102747 48%,#142b50 65%,#183355 83%,#10213d 100%);box-shadow:inset 0 1px 0 #e5f3ff6b,inset 1px 0 0 #a4c3e342,inset -1px -1px 0 #020a1d99}
+.card-stage .card-material::before{content:"";position:absolute;inset:4px;z-index:3;border-radius:calc(24px - 4px);border:1px solid #b9d2f00c;border-top-color:#cce4ff13;pointer-events:none}
+.card-stage .card-material::after{background:linear-gradient(115deg,transparent 20%,#c7e5ff06 29%,transparent 37%,transparent 61%,#bad8ff08 69%,transparent 79%)}
+.card-stage .card-grain{opacity:.035}
+.card-stage .card-light{background:radial-gradient(ellipse at var(--light-x,35%) var(--light-y,20%),#bddfff17,transparent 60%)}
+.card-sheen{position:absolute;inset:-65% -100%;background:linear-gradient(112deg,transparent 35%,#b2d8ff02 42%,#dcefff12 48%,#e7f4ff23 50%,#b2d8ff06 54%,transparent 62%);transform:translate3d(-35%,0,0);pointer-events:none}
+.card-stage .card-top,.card-stage .card-bottom{position:relative;z-index:1;transform:translateZ(7px)}
+.card-stage .card-identity{position:relative;z-index:1;transform:translateZ(16px)}
+.card-stage .card-wordmark{color:#f0f5ff;text-shadow:0 1px 0 #fff5,0 2px 2px #03102ea6}
+.card-stage .card-handle{color:#f0f5ff;text-shadow:0 1px 0 #f9fcff66,0 2px 1px #0a193c,0 4px 7px #030b22a6}
+.card-stage .card-credit{text-shadow:0 1px 0 #fff2,0 2px 3px #041029a6}
+.card-stage .card-label,.card-stage .card-subtitle{color:#c0cfe5}
+.card-motion-toggle{position:absolute;right:0;bottom:-36px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:5px 8px;background:none;border:0;border-radius:6px;color:#8fa4c4;font:inherit;font-size:10px;letter-spacing:.02em;cursor:pointer}
+.card-motion-toggle:hover{color:#d6e5ff;background:#ffffff06}
+.card-motion-toggle:focus-visible{outline:2px solid #91b7ff;outline-offset:2px}
+@keyframes sapphire-drift{0%,100%{transform:translate3d(0,0,0) rotateX(4deg) rotateY(-4deg) rotateZ(-.35deg)}50%{transform:translate3d(0,-4px,0) rotateX(2deg) rotateY(-1.5deg) rotateZ(.15deg)}}
+@keyframes sapphire-sheen{0%,12%{transform:translate3d(-35%,0,0);opacity:0}22%{opacity:.7}48%{opacity:.55}62%,100%{transform:translate3d(35%,0,0);opacity:0}}
+@media(prefers-reduced-motion:no-preference){.card-levitate{animation:sapphire-drift 10s ease-in-out infinite}.card-sheen{animation:sapphire-sheen 12s ease-in-out infinite}.card-stage[data-animated="false"] .card-levitate,.card-stage[data-animated="false"] .card-sheen,.card-stage[data-animated="false"] .card-reveal{animation-play-state:paused}.card-stage:has(.card-reveal:hover) .card-levitate{animation-play-state:paused}}
+/* Native focus stops decoration immediately, including focus before React hydrates. */
+.hero:has(.claim-form:focus-within) .card-levitate,.hero:has(.claim-form:focus-within) .card-sheen,.hero:has(.claim-form:focus-within) .card-reveal{animation-play-state:paused}
+.hero:has(.claim-form:focus-within) .identity-card{transform:none!important}
+@media(max-width:767px){.card-stage .card-material::before{border-radius:15px}.card-stage .card-identity{transform:translateZ(9px)}.card-stage .card-top,.card-stage .card-bottom{transform:translateZ(4px)}.card-motion-toggle{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.card-stage::before{filter:none;opacity:.2}.card-levitate,.card-stage .card-top,.card-stage .card-bottom,.card-stage .card-identity{transform:none!important}.card-sheen,.card-motion-toggle{display:none}.card-stage .identity-card{will-change:auto}}
