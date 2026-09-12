@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "neylo",
+  "compatibility_date": "2026-09-12",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "main": "./worker.ts",
+  "assets": {
+    "directory": "dist/client",
+    "not_found_handling": "none",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "cache": {
+    "enabled": true
+  },
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  },
+  "account_id": "edda2b12d52321e4df2012e196b33640",
+  "vars": {
+    "OPERATOR_NAME": "Horalix d.o.o.",
+    "OPERATOR_ADDRESS": "Maglajska 1, Sarajevo, Bosnia and Herzegovina",
+    "SMTP_VERIFIED": "true",
+    "PUBLIC_ENROLLMENT_ENABLED": "true",
+    "APP_ORIGIN": "https://neylo.xyz",
+    "APP_STAGE": "production",
+    "TERMS_APPROVED": "true",
+    "SUPPORT_EMAIL": "kerim@horalix.com"
+  },
+  "routes": [
+    {
+      "custom_domain": true,
+      "pattern": "neylo.xyz"
+    },
+    {
+      "custom_domain": true,
+      "pattern": "www.neylo.xyz"
+    }
+  ]
+}

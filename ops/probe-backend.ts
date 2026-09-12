@@ -1,0 +1,13 @@
+import { readFile,writeFile,mkdir } from 'node:fs/promises';
+import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
+const c=z.object({NEXT_PUBLIC_SUPABASE_URL:z.url(),NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:z.string(),SUPABASE_SECRET_KEY:z.string()}).parse(JSON.parse(await readFile('.env.production.secrets.json','utf8')));
+if(c.NEXT_PUBLIC_SUPABASE_URL!=='https://tfphopejudgbfrucdxsy.supabase.co')throw new Error('Wrong project');
+const service=createClient(c.NEXT_PUBLIC_SUPABASE_URL,c.SUPABASE_SECRET_KEY,{auth:{persistSession:false}});
+const publicClient=createClient(c.NEXT_PUBLIC_SUPABASE_URL,c.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:false}});
+const {data:campaign,error}=await service.rpc('neylo_campaign');if(error)throw new Error(`Managed RPC failed: ${error.code}`);
+const {count,error:countError}=await service.from('profiles').select('user_id',{head:true,count:'exact'});if(countError)throw new Error(`Managed table probe failed: ${countError.code}`);
+const denied=await publicClient.rpc('neylo_campaign');if(!denied.error)throw new Error('Anonymous privileged RPC unexpectedly allowed');
+const privateRead=await publicClient.from('pending_signups').select('id');if(!privateRead.error)throw new Error('Anonymous private table read unexpectedly allowed');
+const report={at:new Date().toISOString(),project:'tfphopejudgbfrucdxsy',managedRpc:true,completedProfiles:count,campaignVersion:campaign.version,enrollmentOpen:campaign.open,anonymousRpcDenied:true,anonymousPendingTableDenied:true};
+await mkdir('test-results',{recursive:true});await writeFile('test-results/managed-backend.json',JSON.stringify(report,null,2));console.log(report);

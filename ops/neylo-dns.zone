@@ -1,0 +1,12 @@
+$ORIGIN neylo.xyz.
+$TTL 1800
+@ IN MX 10 eforward1.registrar-servers.com.
+@ IN MX 10 eforward2.registrar-servers.com.
+@ IN MX 10 eforward3.registrar-servers.com.
+@ IN MX 15 eforward4.registrar-servers.com.
+@ IN MX 20 eforward5.registrar-servers.com.
+@ IN TXT "v=spf1 include:spf.efwd.registrar-servers.com ~all"
+resend._domainkey.notify IN TXT "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnfbmOz52msnRFk/fp5nacOE+93WSDDcDKjxVQGa5UvGvJGefIwGWLweWhmJs0TgO5tfuZB8d/RrS5/d0mhPxqkUE/eTlsXhMvJtIKDt9fhnmGmHkOVBOjG/G4LG69MbaedZY+aOOoGHcdxs0aapvgYyqotQpH3AUtEDGhm079yQIDAQAB"
+rsend.notify IN CNAME rsend-euw1.forge.rmta.net.
+send.notify IN CNAME send.forge.rmta.net.
+_dmarc.notify IN TXT "v=DMARC1; p=none;"
