@@ -12,9 +12,13 @@ export default {
     }
     // With run_worker_first enabled, static requests must explicitly use the asset binding.
     // The framework handler only serves application routes in the deployed Worker.
+    const trustedHeaders=new Headers(request.headers);
+    const country=(request as Request & {cf?:{country?:unknown}}).cf?.country;
+    trustedHeaders.set('x-neylo-country',typeof country==='string'&&/^[A-Z]{2}$/.test(country)?country:'XX');
+    const applicationRequest=new Request(request,{headers:trustedHeaders});
     const original=url.pathname.startsWith('/_next/static/')
       ? await (env.ASSETS as {fetch(request:Request):Promise<Response>}).fetch(request)
-      : await handler.fetch(request,env,ctx);
+      : await handler.fetch(applicationRequest,env,ctx);
     const response=new Response(original.body,original);
     for(const [name,value] of Object.entries(securityHeaders(env.APP_STAGE==='development')))response.headers.set(name,value);
     if(!url.pathname.startsWith('/_next/static/'))response.headers.set('Cache-Control','private, no-store, max-age=0');

@@ -9,11 +9,14 @@ Next.js App Router / React / TypeScript, Cloudflare Workers, managed Supabase Po
 - App: https://neylo.xyz
 - Account / sign-in: https://neylo.xyz/account and https://neylo.xyz/signin
 - Private validation: https://neylo.xyz/admin/validation
+- Operator-only registered emails: https://neylo.xyz/admin/accounts
 - Authenticated aggregate presentation: https://neylo.xyz/judge
 - Owner: `kerim@horalix.com`, operator membership established only after real provider email verification.
 - Operator: Horalix d.o.o., Maglajska 1, Sarajevo, Bosnia and Herzegovina.
 
 The first 100 eligible verified founding accounts receive 100 KM in reserved launch fee credits. Each eligible founder can earn three 50 KM referral grants, up to 250 KM total. Sharing or opening an invitation earns nothing. Credits are not cash or spendable funds. Published rules are versioned in Postgres; the owner approved `founding-v1`.
+
+Visitors see approximate local-currency equivalents based on trusted Cloudflare country metadata, with a manual display selector. Entitlements and admin accounting remain in BAM. The EUR peg is fixed at 1.95583 BAM per EUR; other display rates come from dated Frankfurter reference quotes. Unknown countries or unavailable/stale rates fall back to KM. See [currency and account-list update](docs/localization-and-accounts.md).
 
 ## Local development
 
@@ -42,7 +45,9 @@ npm test
 npm run test:db
 ```
 
-**The database suite resets the isolated local fixture.** It rejects non-local database targets. Run it before creating manual browser test accounts. It exercises actual Postgres transactions, concurrency, retries, RLS, permission boundaries, exclusions, reversals, and deletion workflows. Five focused unit tests cover parsing, money formatting, input boundaries and filters.
+**The database suite resets the isolated local fixture.** It rejects non-local database targets. Run it before creating manual browser test accounts. It exercises actual Postgres transactions, concurrency, retries, RLS, permission boundaries, exclusions, reversals, and deletion workflows. Nine focused unit tests cover parsing, money conversion, country mapping, unavailable rates, input boundaries and filters.
+
+The additive account-directory check, `npx tsx tests/database/registered-accounts.ts`, preserves existing local accounts. Its fixtures roll back after testing operator/presenter boundaries, verified completion, search and pagination. It applies migration 006 locally if missing.
 
 Browser verification uses real local provider OTPs captured by Mailpit in two separate cookie origins (`127.0.0.1` and `localhost`). `ops/capture-browser-data.ts` reconciles those completed records and CSV totals; it is a local-only evidence helper, not a simulated production signup. See [verification](docs/verification.md) for exact coverage and limitations.
 

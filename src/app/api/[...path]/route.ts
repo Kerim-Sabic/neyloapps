@@ -7,8 +7,9 @@ import { database,optionalUser } from '@/core/supabase';
 import { rpcResult,voidResult } from '@/core/rpc';
 import { startClaim,pendingClaim,verifyClaim,resendClaim,finalizeClaim,signin,verifySignin,signout } from '@/features/signup/service';
 import { getAccount,preferences,qualification,deletion } from '@/features/account/service';
-import { adminRole,getMetrics,queue,reconcile,mutateAdmin } from '@/features/admin/service';
+import { adminRole,getMetrics,getRegisteredAccounts,queue,reconcile,mutateAdmin } from '@/features/admin/service';
 import { metricsCsv } from '@/features/admin/csv';
+import { getCurrencyDisplay } from '@/features/currency/service';
 
 export const dynamic='force-dynamic';
 const posts:Record<string,(input:unknown)=>Promise<unknown>>={
@@ -27,12 +28,14 @@ async function readBody(request:Request){
 }
 async function get(path:string,url:URL){
   if(path==='health')return {ok:true,service:'neylo'};
+  if(path==='display-currency')return getCurrencyDisplay(url.searchParams.get('currency')??undefined);
   if(path==='campaign'){if(!authConfigured())return {ready:false};return {ready:enrollmentReady(),campaign:await rpcResult(database().rpc('neylo_campaign'),campaignSchema)};}
   if(path==='handle'){const handle=handleSchema.parse(url.searchParams.get('handle'));return {available:await rpcResult(database().rpc('neylo_handle_available',{p_handle:handle}),z.boolean())};}
   if(path==='invitation'){const code=invitationCodeSchema.parse(url.searchParams.get('code'));const invitation=await rpcResult(database().rpc('neylo_invitation',{p_code:code}),invitationSchema.nullable());if(!invitation)throw new AppError('NOT_FOUND',404);return invitation;}
   if(path==='signup/pending')return {pending:await pendingClaim()};
   if(path==='account')return getAccount();
   if(path==='admin/role')return {role:(await adminRole()).role};
+  if(path==='admin/accounts')return getRegisteredAccounts(Object.fromEntries(url.searchParams));
   if(path==='admin/metrics'||path==='admin/export')return getMetrics(Object.fromEntries(url.searchParams));
   if(path==='admin/queue')return queue();
   if(path==='admin/reconcile')return reconcile();

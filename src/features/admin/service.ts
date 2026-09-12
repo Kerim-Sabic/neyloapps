@@ -4,9 +4,12 @@ import { database,requireUser } from '@/core/supabase';
 import { rpcResult,voidResult } from '@/core/rpc';
 import { requireRecentAuth,limit } from '@/core/security';
 import { metricsSchema,metricsFilterSchema,cohortSchema } from '@/lib/domain';
+import { accountsFilterSchema,registeredAccountsSchema } from './accounts-domain';
+import { AppError } from '@/lib/errors';
 const reason=z.string().min(3).max(1000);
 
 export async function adminRole(){const user=await requireUser();const role=await rpcResult(database().rpc('neylo_require_admin',{p_actor:user.id}),z.enum(['operator','presenter']));return {user,role};}
+export async function getRegisteredAccounts(input:unknown){const {user,role}=await adminRole();if(role!=='operator')throw new AppError('FORBIDDEN',403);const f=accountsFilterSchema.parse(input);return rpcResult(database().rpc('neylo_registered_accounts',{p_actor:user.id,p_search:f.search.replace(/^@/,''),p_cohort:f.cohort,p_page:f.page,p_page_size:f.pageSize}),registeredAccountsSchema);}
 export async function getMetrics(input:unknown){const {user}=await adminRole();const f=metricsFilterSchema.parse(input);return rpcResult(database().rpc('neylo_metrics',{p_actor:user.id,p_from:f.from,p_to:f.to,p_cohort:f.cohort}),metricsSchema);}
 export async function queue(){const {user}=await adminRole();return rpcResult(database().rpc('neylo_review_queue',{p_actor:user.id}),z.unknown());}
 export async function reconcile(){const {user}=await adminRole();return rpcResult(database().rpc('neylo_reconcile',{p_actor:user.id}),z.record(z.string(),z.boolean()));}

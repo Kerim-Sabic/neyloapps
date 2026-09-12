@@ -720,6 +720,7 @@ export type Database = {
     }
     Functions: {
       neylo_account: { Args: { p_user_id: string }; Returns: Json }
+      neylo_bootstrap_owner: { Args: { p_email: string }; Returns: string }
       neylo_campaign: { Args: never; Returns: Json }
       neylo_classify: {
         Args: {
@@ -808,6 +809,16 @@ export type Database = {
         Returns: boolean
       }
       neylo_reconcile: { Args: { p_actor: string }; Returns: Json }
+      neylo_registered_accounts: {
+        Args: {
+          p_actor: string
+          p_cohort?: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+        }
+        Returns: Json
+      }
       neylo_request_deletion: { Args: { p_user_id: string }; Returns: string }
       neylo_request_otp: { Args: { p_token_hash: string }; Returns: boolean }
       neylo_require_admin: {
