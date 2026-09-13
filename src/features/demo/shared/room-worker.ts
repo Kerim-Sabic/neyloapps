@@ -50,7 +50,18 @@ export async function sharedDemoRequest(request:Request,env:Record<string,unknow
   const namespace=env.DEMO_ROOMS as Namespace|undefined;
   if(!namespace)return json({error:'Shared sessions are unavailable. Please retry shortly.'},503);
   const url=new URL(request.url),path=url.pathname.replace('/api/demo-room','')||'/';
-  if(!['/','/create','/send'].includes(path)||!['GET','POST'].includes(request.method))return json({error:'NOT_FOUND'},404);
+  if(!['/','/stage','/create','/send'].includes(path)||!['GET','POST'].includes(request.method))return json({error:'NOT_FOUND'},404);
+  if(path==='/stage'){
+    if(request.method!=='GET')return json({error:'METHOD_NOT_ALLOWED'},405);
+    // A public presentation room, shared by the two bare URLs. This identifier
+    // is intentionally public, never an account credential or private room key.
+    const day=new Date().toISOString().slice(0,10);
+    const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`neylo:public-stage:v1:${day}`));
+    const token=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('').slice(0,48);
+    const response=await namespace.getByName(`room:${token}`).fetch(new Request('https://demo.internal/create',{method:'POST',body:'{}'}));
+    if(!response.ok)return response;
+    return json({...await response.json() as object,token});
+  }
   if(request.method==='POST'){
     if(request.headers.get('origin')!==url.origin)return json({error:'INVALID_ORIGIN'},403);
     if(!request.headers.get('content-type')?.startsWith('application/json'))return json({error:'INVALID_INPUT'},415);

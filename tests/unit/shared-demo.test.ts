@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { advanceRoom,ARRIVAL_MS,newRoom,projectTransfer,RoomError,sendInRoom } from '../../src/features/demo/shared/domain';
+import { advanceRoom,ARRIVAL_MS,MAX_ROOM_TRANSFERS,newRoom,projectTransfer,RoomError,sendInRoom } from '../../src/features/demo/shared/domain';
 import { DemoRoom,sharedDemoRequest } from '../../src/features/demo/shared/room-worker';
 
 test('Shared transfer derives fee and recipient amount through the existing quote engine',()=>{
@@ -56,4 +56,30 @@ test('Public session API enforces origins, room capability, methods and body lim
   assert.equal((await sharedDemoRequest(new Request(base+'/send',{headers}),env)).status,405);
   assert.equal((await sharedDemoRequest(new Request(base+'/send',{method:'POST',headers,body:JSON.stringify({key:randomUUID(),sender:'nadin',amount:'10',feeMinor:0})}),env)).status,400);
   assert.equal((await sharedDemoRequest(new Request(base+'/send',{method:'POST',headers,body:'x'.repeat(3000)}),env)).status,413);
+});
+
+test('Rehearsal capacity remains bounded without forgetting earlier idempotency keys',()=>{
+  let room=newRoom(0);const first={key:randomUUID(),sender:'nadin',amount:'10'};
+  for(let i=0;i<MAX_ROOM_TRANSFERS;i++)room=sendInRoom(room,i===0?first:{...first,key:randomUUID()},i*ARRIVAL_MS,randomUUID());
+  assert.equal(room.transfers.length,MAX_ROOM_TRANSFERS);
+  assert.equal(sendInRoom(room,first,MAX_ROOM_TRANSFERS*ARRIVAL_MS,randomUUID()),room);
+  assert.throws(()=>sendInRoom(room,{...first,key:randomUUID()},MAX_ROOM_TRANSFERS*ARRIVAL_MS,randomUUID()),/SESSION_FULL/);
+});
+
+test('Independent clients join the same public stage while private rooms remain separate',async()=>{
+  const objects=new Map<string,DemoRoom>();
+  const env={DEMO_ROOMS:{getByName(name:string){if(!objects.has(name))objects.set(name,new DemoRoom(memoryContext()));return objects.get(name)!;}}};
+  const base='https://neylo.xyz/api/demo-room';
+  const clients=await Promise.all(Array.from({length:6},()=>sharedDemoRequest(new Request(base+'/stage'),env).then(r=>r.json()))) as {token:string;room:{transfers:{id:string;receivedMinor:number;completedAt:number|null}[]}}[];
+  assert.equal(new Set(clients.map(client=>client.token)).size,1);
+  assert.ok(clients.every(client=>client.room.transfers.length===0));
+  const token=clients[0]!.token,headers={origin:'https://neylo.xyz','content-type':'application/json','x-neylo-demo-room':token};
+  const key=randomUUID();
+  const sends=await Promise.all(Array.from({length:5},()=>sharedDemoRequest(new Request(base+'/send',{method:'POST',headers,body:JSON.stringify({sender:'nadin',amount:'40',key})}),env).then(r=>r.json()))) as typeof clients;
+  const received=await sharedDemoRequest(new Request(base+'/stage'),env).then(r=>r.json()) as typeof clients[number];
+  assert.equal(received.room.transfers.length,1);assert.equal(received.room.transfers[0]?.receivedMinor,3990);assert.equal(received.room.transfers[0]?.completedAt,null);
+  assert.ok(sends.every(send=>send.room.transfers[0]?.id===received.room.transfers[0]?.id));
+  const privateRoom=await sharedDemoRequest(new Request(base+'/create',{method:'POST',headers,body:'{}'}),env).then(r=>r.json()) as typeof clients[number];
+  assert.notEqual(privateRoom.token,token);assert.equal(privateRoom.room.transfers.length,0);
+  assert.equal((await sharedDemoRequest(new Request(base+'/stage',{method:'POST',headers,body:'{}'}),env)).status,405);
 });

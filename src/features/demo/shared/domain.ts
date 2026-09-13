@@ -9,13 +9,14 @@ export const PEOPLE = {
 export type Person = keyof typeof PEOPLE;
 export const otherPerson = (person:Person):Person => person==='nadin'?'kerim':'nadin';
 export const ARRIVAL_MS=15_000;
+export const MAX_ROOM_TRANSFERS=200;
 export const ROOM_LIFETIME_MS=24*60*60*1000;
 export const ROOM_KEY='neylo:demo:pair:v1';
 export const tokenSchema=z.string().regex(/^[a-f0-9]{48}$/);
 export const sendSchema=z.object({key:z.uuid(),sender:z.enum(['nadin','kerim']),amount:z.string().max(20)}).strict();
 export const sharedTransferSchema=z.object({id:z.uuid(),key:z.uuid(),sender:z.enum(['nadin','kerim']),recipient:z.enum(['nadin','kerim']),sentMinor:z.number().int().min(100).max(1_000_000),feeMinor:z.number().int().nonnegative(),receivedMinor:z.number().int().positive(),startedAt:z.number(),arrivesAt:z.number(),completedAt:z.number().nullable()});
 export type SharedTransfer=z.infer<typeof sharedTransferSchema>;
-export const roomSchema=z.object({version:z.literal(1),createdAt:z.number(),expiresAt:z.number(),revision:z.number().int(),transfers:z.array(sharedTransferSchema).max(40)});
+export const roomSchema=z.object({version:z.literal(1),createdAt:z.number(),expiresAt:z.number(),revision:z.number().int(),transfers:z.array(sharedTransferSchema).max(MAX_ROOM_TRANSFERS)});
 export type Room=z.infer<typeof roomSchema>;
 export const snapshotSchema=z.object({room:roomSchema,serverNow:z.number()});
 export type Snapshot=z.infer<typeof snapshotSchema>;
@@ -35,7 +36,7 @@ export function sendInRoom(room:Room,input:unknown,now:number,id:string):Room {
   if(prior){if(prior.sender!==data.sender||prior.sentMinor!==amount.minor)throw new RoomError('IDEMPOTENCY_CONFLICT');return room;}
   const current=advanceRoom(room,now);
   if(current.transfers.some(t=>t.completedAt===null))throw new RoomError('TRANSFER_IN_PROGRESS');
-  if(current.transfers.length>=40)throw new RoomError('SESSION_FULL');
+  if(current.transfers.length>=MAX_ROOM_TRANSFERS)throw new RoomError('SESSION_FULL');
   const quote=calculateQuotes('kesh',amount.minor,now)[0];
   if(!quote)throw new RoomError('Enter an amount between 1 and 10,000 KM.',400);
   return {...current,revision:current.revision+1,transfers:[...current.transfers,{id,key:data.key,sender:data.sender,recipient:otherPerson(data.sender),sentMinor:quote.sentMinor,feeMinor:quote.feeMinor,receivedMinor:quote.receivedMinor,startedAt:now,arrivesAt:now+ARRIVAL_MS,completedAt:null}]};

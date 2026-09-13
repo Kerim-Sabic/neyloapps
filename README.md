@@ -37,7 +37,7 @@ NEYLO starts with a personal money address: **@you**. The working early-access p
 | **[Nadin ↗](https://neylo.xyz/demo/nadin) · [Kerim ↗](https://neylo.xyz/demo/kerim)** | Pair two browser sessions and watch the same transfer progress between both participants. |
 | **[The pitch ↗](https://neylo.xyz/pitch)** | Explore the product story, working experiences and current aggregate signup counts. |
 
-For the connected experience, open **Nadin → Connect the two pages**, then open its pairing link or scan the QR on the second device. Both screens share the same isolated session. [Presentation guide →](docs/connected-demo.md)
+Open **Nadin** and **Kerim** on two devices. The bare URLs connect automatically: tap Kerim on Nadin’s page, enter an amount and send. The arrival appears on Kerim’s page after about 15 seconds. Use **Connection settings → Start a private session** for a separate rehearsal. [Presentation guide →](docs/presentation-guide.md)
 
 **Execution boundary:** accounts and waitlist records are real. Financial execution in the product experiences is simulated; bank and payment-provider integrations are not connected. Demo activity stays separate from real account and acquisition records.
 
@@ -102,7 +102,7 @@ The setup helper creates ignored local configuration and refuses to modify a dat
 ### Verify. Build. Ship.
 
 ```sh
-npm run check              # TypeScript + 43 tests
+npm run check              # TypeScript + 46 tests
 npm run test:db            # Resets the isolated local database fixture
 npm run build:production   # Builds for the configured production backend
 npm run deploy:vinext      # Builds and deploys through authenticated Wrangler
@@ -119,6 +119,7 @@ Production builds require the authorized machine’s ignored configuration. Depl
   <a href="docs/operations.md">Operations</a>&nbsp; · &nbsp;
   <a href="docs/verification.md">Verification</a>&nbsp; · &nbsp;
   <a href="docs/product-demo.md">Product experience</a>&nbsp; · &nbsp;
+  <a href="docs/presentation-guide.md">Presenter guide</a>&nbsp; · &nbsp;
   <a href="docs/waitlist-transition.md">Waitlist release</a>
 </p>
 

@@ -58,7 +58,7 @@ export function demoReducer(state: DemoState, action: Action): DemoState {
     case 'TICK': {
       if (flow.phase !== 'simulating' || flow.transfer.id !== action.id) return state;
       const transfer = advanceTransfer(flow.transfer, action.delta);
-      return { ...state, flow: transferFlow(transfer), receipts: transfer.status === 'completed' && !state.receipts.some(r => r.id === transfer.id) ? [transfer, ...state.receipts].slice(0, 20) : state.receipts };
+      return { ...state, expanded: transfer.status === 'completed' ? false : state.expanded, flow: transferFlow(transfer), receipts: transfer.status === 'completed' && !state.receipts.some(r => r.id === transfer.id) ? [transfer, ...state.receipts].slice(0, 20) : state.receipts };
     }
     case 'PAUSE': return flow.phase === 'simulating' ? { ...state, flow: transferFlow({ ...flow.transfer, status: 'paused' }) } : state;
     case 'RESUME': return flow.phase === 'paused' ? { ...state, flow: transferFlow({ ...flow.transfer, status: 'running' }) } : state;

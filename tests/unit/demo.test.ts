@@ -97,6 +97,15 @@ test('Expanding throughout execution preserves identity and progress; receipts r
   assert.deepEqual(state.receipts[0]?.quote, q); const t = currentTransfer(state); assert.ok(t); assert.equal(t.elapsed, duration(t.quote));
   state = demoReducer(state, { type: 'TICK', id: 'transfer-a', delta: 10000 }); assert.equal(state.receipts.length, 1);
 });
+test('Arrival folds the same route into the receipt and permits expansion without replay', () => {
+  let state=demoReducer(confirmed(),{type:'EXPAND'});assert.equal(state.expanded,true);
+  state=demoReducer(state,{type:'TICK',id:'transfer-a',delta:100000});
+  assert.equal(state.flow.phase,'completed');assert.equal(state.expanded,false);
+  const transfer=currentTransfer(state);
+  state=demoReducer(state,{type:'EXPAND'});assert.equal(state.expanded,true);assert.equal(currentTransfer(state),transfer);
+  assert.equal(demoReducer(state,{type:'TICK',id:'transfer-a',delta:100000}),state);assert.equal(state.receipts.length,1);
+});
+
 test('Refresh pauses in-flight state and restores completed receipts without replay', () => {
   let state = demoReducer(confirmed(), { type: 'TICK', id: 'transfer-a', delta: 1700 });
   const restored = decodeSnapshot(encodeSnapshot(state), now + 60000); assert.equal(restored.flow.phase, 'paused'); assert.equal(currentTransfer(restored)?.elapsed, 1700);
@@ -115,14 +124,15 @@ test('Connector geometry maintains exact eight-pixel gaps in horizontal, vertica
   assert.equal(connectorGeometry({ x: 0, y: 0, radius: 22 }, { x: 20, y: 0, radius: 22 }), null);
 });
 test('Guided playback uses the same actions, selects fastest, and finishes through adapter events', () => {
-  let state: DemoState = initialState, step: GuidedStep = 'recipient'; const sheets: boolean[] = [];
+  let state: DemoState = initialState, step: GuidedStep = 'recipient', expandedDuringJourney = false; const sheets: boolean[] = [];
   for (let i = 0; i < 20 && step !== 'done'; i++) {
     const effect = guidedAction(step, state, now, 'guided', false);
     if (effect.action) state = demoReducer(state, effect.action);
+    if (state.flow.phase === 'simulating' && state.expanded) expandedDuringJourney = true;
     if (effect.sheet !== undefined) sheets.push(effect.sheet);
     step = effect.next;
     if (step === 'arrival') state = demoReducer(state, { type: 'TICK', id: 'guided', delta: 100000 });
   }
-  assert.equal(step, 'done'); assert.equal(state.flow.phase, 'completed'); assert.equal(state.expanded, true);
+  assert.equal(step, 'done'); assert.equal(state.flow.phase, 'completed'); assert.equal(expandedDuringJourney, true); assert.equal(state.expanded, false);
   assert.equal(selectedQuote(state)?.route.id, 'eur-express'); assert.deepEqual(sheets, [true, false]);
 });

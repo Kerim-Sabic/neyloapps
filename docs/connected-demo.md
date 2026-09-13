@@ -5,12 +5,17 @@ in addition to the existing `/app/demo` routing experience. These pages use
 presentation identities and example email addresses; they do not sign into or
 impersonate actual registered participants.
 
-Open either route and choose **Connect the two pages** (or start sending). The
-pairing sheet provides a QR, an Open link and Copy pairing link. Open that link
-on the second device. A 192-bit room capability lives in the URL fragment and
-the namespaced `neylo:demo:pair:v1` browser storage key. A bare participant URL
-reuses the most recently paired session in that browser. Different devices must
-use the pairing link; globally guessing a participant's handle is not pairing.
+Open `/demo/nadin` on one device and `/demo/kerim` on the other. The bare URLs
+automatically join the same public presentation room for the UTC day. Tap the
+whole contact row, enter an amount and send. No account sign-in or pairing step
+is required. Everyone opening those public URLs shares the same synthetic
+activity; this is not a private banking session or access to actual accounts.
+
+**Connection settings → Start a private session** creates a separate rehearsal.
+Its QR and pairing link include a random 192-bit capability in the URL fragment.
+Open that link on the other device. Bare URLs always use the public stage,
+even if that browser previously used a private link. Existing auth storage is
+never read or cleared. Refresh both bare pages when presenting on a new UTC day.
 
 Both participants can send to the other. The composer uses the existing integer
 minor-unit quote engine. A 25 KM total includes a 0.10 KM fee and yields 24.90 KM
@@ -41,14 +46,16 @@ client interpolation stops short of the completion event until confirmation
 arrives from the room. Closing both pages does not cancel the server deadline.
 Repeated alarms and requests do not append duplicate receipts.
 
-`use-room.ts` reads canonical snapshots through SWR, polling every second during
-a transfer and every five seconds while idle. Polling stops in hidden pages and
+`use-room.ts` reads canonical snapshots through SWR, polling every 750 ms during
+a transfer and every two seconds while idle. Polling stops in hidden pages and
 after expiry; returning to the page revalidates. No cookies or real account
-credentials are required for a room. Possession of a pairing link grants both
+credentials are required for a room. A private pairing link grants both
 presentation roles within that room, so share it only with the participants.
+`GET /api/demo-room/stage` resolves a deliberately public daily room identifier;
+it does not disclose any private room capability or registered identity.
 
 Sessions expire after 24 hours; Durable Object alarms delete the session storage.
-Each session permits 40 transfers, and creation is limited to 24 sessions per IP
+Each session permits 200 transfers, and private creation is limited to 24 sessions per IP
 per hour. The limiter stores a hash, not the original IP. A new paired session
 creates a fresh room instead of deleting another participant's active session.
 The old room remains available until expiry. No unrelated local storage is cleared.

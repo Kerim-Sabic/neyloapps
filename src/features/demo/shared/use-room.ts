@@ -20,25 +20,26 @@ async function api(path:string,token:string,body?:unknown):Promise<TimedSnapshot
   finally{clearTimeout(timeout);}
 }
 export function useRoom(person:Person){
-  const [token,setToken]=useState(''),[ready,setReady]=useState(false),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
+  const [token,setToken]=useState(''),[ready,setReady]=useState(false),[busy,setBusy]=useState(false),[notice,setNotice]=useState(''),[stage,setStage]=useState(true),[reconnect,setReconnect]=useState(0);
   const inFlight=useRef(false),generation=useRef(0);
-  const {data,error,mutate}=useSWR(token?['shared-demo-room',token]:null,([,roomToken]:[string,string])=>api('',roomToken),{refreshInterval:(snapshot:TimedSnapshot|undefined)=>snapshot&&snapshot.serverNow+Math.max(0,performance.now()-snapshot.receivedAt)>=snapshot.room.expiresAt?0:snapshot?.room.transfers.some(t=>t.completedAt===null)?1000:5000,refreshWhenHidden:false,revalidateOnFocus:true,dedupingInterval:500,shouldRetryOnError:false});
+  const {data,error,mutate}=useSWR(token?['shared-demo-room',token]:null,([,roomToken]:[string,string])=>api('',roomToken),{refreshInterval:(snapshot:TimedSnapshot|undefined)=>snapshot&&snapshot.serverNow+Math.max(0,performance.now()-snapshot.receivedAt)>=snapshot.room.expiresAt?0:snapshot?.room.transfers.some(t=>t.completedAt===null)?750:2000,refreshWhenHidden:false,revalidateOnFocus:true,dedupingInterval:400,shouldRetryOnError:false});
   useEffect(()=>{
-    const restore=()=>{
-      generation.current++;
-      const fragment=new URLSearchParams(location.hash.slice(1)).get('room');let saved:string|null=null;
-      try{saved=localStorage.getItem(ROOM_KEY);}catch{}
-      const result=tokenSchema.safeParse(fragment??saved);
-      if(result.success){setToken(result.data);try{localStorage.setItem(ROOM_KEY,result.data);}catch{}if(!fragment)history.replaceState(null,'',`${location.pathname}#room=${result.data}`);}
-      setReady(true);
+    const restore=async()=>{
+      const current=++generation.current;
+      setReady(false);setNotice('');setToken('');
+      const fragment=new URLSearchParams(location.hash.slice(1)).get('room');
+      try{
+        if(fragment!==null){setStage(false);setToken(tokenSchema.parse(fragment));}
+        else{setStage(true);const next=await api('/stage','');if(current!==generation.current)return;setToken(tokenSchema.parse(next.token));}
+      }catch(error){if(current===generation.current)setNotice(error instanceof z.ZodError?'This pairing link is invalid. Open the page without its pairing link to join the presentation.':error instanceof Error?error.message:'Could not connect. Please retry.');}
+      finally{if(current===generation.current)setReady(true);}
     };
-    restore();window.addEventListener('hashchange',restore);
-    const sync=(event:StorageEvent)=>{if(event.key===ROOM_KEY&&!location.hash)restore();};window.addEventListener('storage',sync);
-    return()=>{generation.current++;window.removeEventListener('hashchange',restore);window.removeEventListener('storage',sync);};
-  },[]);
+    void restore();window.addEventListener('hashchange',restore);
+    return()=>{generation.current++;window.removeEventListener('hashchange',restore);};
+  },[reconnect]);
   const create=useCallback(async()=>{
     if(inFlight.current)return null;inFlight.current=true;setBusy(true);setNotice('');const current=++generation.current;
-    try{const next=await api('/create','',{});if(current!==generation.current)return null;const created=tokenSchema.parse(next.token);setToken(created);history.replaceState(null,'',`${location.pathname}#room=${created}`);try{localStorage.setItem(ROOM_KEY,created);}catch{}return created;}
+    try{const next=await api('/create','',{});if(current!==generation.current)return null;const created=tokenSchema.parse(next.token);setStage(false);setToken(created);history.replaceState(null,'',`${location.pathname}#room=${created}`);try{localStorage.setItem(ROOM_KEY,created);}catch{}return created;}
     catch(e){if(current===generation.current)setNotice(e instanceof Error?e.message:'Could not connect. Please retry.');return null;}
     finally{inFlight.current=false;setBusy(false);}
   },[]);
@@ -55,5 +56,5 @@ export function useRoom(person:Person){
     }catch(e){if(current===generation.current)setNotice(e instanceof Error?e.message:'Unable to send. Retry to check the same transfer.');return null;}
     finally{inFlight.current=false;setBusy(false);}
   }
-  return {token,ready,busy,data,connected:!!data&&!error,error:notice||(error instanceof Error?error.message:''),create,send,refresh:()=>mutate()};
+  return {token,ready,busy,stage,data,connected:!!data&&!error,error:notice||(error instanceof Error?error.message:''),create,send,refresh:()=>token?mutate():setReconnect(value=>value+1)};
 }
