@@ -24,7 +24,7 @@ export const pendingSchema = z.object({email:z.string(),handle:z.string(),expire
 
 export const accountSchema = z.object({
   handle:z.string(),email:z.string(),completedAt:z.string(),cohort:cohortSchema,founderOrdinal:z.number().nullable(),
-  eligibility:z.enum(['eligible','excluded','review_required']),termsVersion:z.string(),acceptedAt:z.string(),
+  eligibility:z.enum(['eligible','excluded','review_required']),termsVersion:z.string(),acceptedAt:z.string().nullable(),
   inviteCode:invitationCodeSchema,referralSlots:z.number(),totalMinor:z.number(),welcomeMinor:z.number(),referralMinor:z.number(),
   canInviteForReward:z.boolean(),analyticsConsent:z.boolean(),marketingConsent:z.boolean(),pilotInterest:z.boolean(),deletionStatus:z.string().nullable(),
   entries:z.array(z.object({id:z.string(),type:z.enum(['welcome','referral','reversal']),amountMinor:z.number(),createdAt:z.string()})),
