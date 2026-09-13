@@ -6,6 +6,12 @@ control switches to Sapphire. Use the fullscreen button, arrow keys, chapter
 rail or bottom controls. Manual interaction pauses the three-minute guided pitch.
 Speaker notes include a downloadable script and primary-source links.
 
+Use the [three-minute spoken script](hackathon-script.txt) for rehearsal. It opens
+with someone the audience could message, follows the eleven existing chapters,
+and includes unspoken stage cues and a connection-delay fallback. Its 361 spoken
+words leave room for pauses and the two-device arrival. Rehearse aloud with the
+devices; the chapter timings are targets, not a measured speaking duration.
+
 ## The story
 
 1. You know who; the software finds the way.

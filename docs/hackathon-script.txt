@@ -1,0 +1,81 @@
+NEYLO — YOU KNOW WHO. WE FIND THE WAY.
+Three-minute pitch / spoken script and stage cues
+
+HOW TO USE
+Speak the paragraphs. Bracketed cues are for you, not the audience. Timings are rehearsal targets; allow the arrival to finish instead of rushing the receipt.
+Before presenting: open /pitch in Projector mode, prepare Nadin’s 25 KM composer, and keep Kerim connected on the second device. For a separate rehearsal, pair both pages using a private session link.
+Use manual chapter controls during the live demonstration. Manual interaction pauses guided playback.
+
+01 / ONE ADDRESS / 0:00–0:13
+[Look at the audience. Pause after “right now” and after the final question. Do not wait for an answer.]
+
+Think of someone you could message right now. You know their name. You probably don’t know their bank account number. Why should paying them require it?
+
+02 / THE PAIN / 0:13–0:28
+[Deliver the four questions as a familiar conversation. Keep the tone warm, not frustrated.]
+
+You want to pay a friend back. Suddenly it’s: “Which bank?” “Send your account number.” “What’s the fee?” “Has it arrived?” A simple favor becomes a conversation about banking.
+
+03 / WHY NOW / 0:28–0:52
+[Indicate the three milestones. Keep exact dates and source links on screen; SEPA application does not mean membership or NEYLO bank access.]
+
+Bosnia and Herzegovina is making its biggest payment-system upgrade in 25 years. IPS BiH launched in July. Financial reforms were adopted, with PSD2 alignment shaping payment services. In August, the country applied to SEPA. The infrastructure is changing. This is our opening to build a simpler experience on top.
+
+04 / THE PRODUCT / 0:52–1:09
+[Say “at Kerim” and point to the address. Slow down for “choose who”.]
+
+NEYLO gives that experience a name: @kerim. Choose who, see the fee and what arrives, then follow the journey. We’re building one address for people and businesses to receive, request and route money.
+
+05 / THE ENGINE / 1:09–1:22
+[Select Fastest once in the workbench. If the control pauses guided playback, continue manually with the chapter controls.]
+
+Choose lowest cost or fastest. Change the amount. Our engine recalculates the fee and what arrives, using configured cost and exchange-rate assumptions. Every screen follows the same calculation.
+
+06 / TRY IT / 1:22–1:50
+[Have Nadin’s 25 KM composer ready and Kerim connected. Say the disclosure before clicking Send. Click just after “Watch Nadin send”. Show the arrival, then say the last sentence only when its matching receipt is visible. The 15 seconds are playback, not bank settlement.]
+
+Financial execution is simulated for this hackathon. Our bank integrations come next. Watch Nadin send 25 KM to @kerim. Both devices follow the same transfer. This fifteen-second playback ends with one matching receipt: 24.90 KM for Kerim.
+
+07 / THE SIGNAL / 1:50–2:06
+[Point to the current count and its two verification categories. Do not memorize a count or call registrations active users. If the endpoint is unavailable, say the count is unavailable.]
+
+That registration count comes from our actual database. It separates NEYLO-verified signups from owner-attested imports and excludes staff and tests. It measures early interest. Our next proof is whether people return to send again.
+
+08 / THE WEDGE / 2:06–2:17
+[Name the first audience clearly: families and freelancers. Avoid adding more markets.]
+
+We start with everyday payments in Bosnia, then a focused Bosnia–euro area corridor for families and freelancers. One useful habit gives us a reason to expand.
+
+09 / THE MODEL / 2:17–2:28
+[Leave the calculator still. This is the proposed business model, not existing revenue.]
+
+Our model is a transparent fee on completed payments, with business collections and payouts later. The pilot must prove customer value and economics after operating costs.
+
+10 / 1 · 5 · 10 YEARS / 2:28–2:48
+[Select each horizon as you say it. These are ambitions gated by authorized integrations and viable operations.]
+
+Year one: connect an authorized provider and prove a repeatable payment journey. Year five: expand regionally, with payment tools for businesses. Year ten: make your payment address portable across institutions and apps. Each step earns the next through working integrations and repeat use.
+
+11 / THE ASK / 2:48–3:00
+[Return your attention to the audience. Pause before “NEYLO”. Finish on the last line without adding a second closing.]
+
+We’re looking for a pilot integration partner and our first payment cohort. Help us make paying someone as natural as messaging them. NEYLO. You know who. We find the way.
+
+IF THE DEMONSTRATION IS DELAYED
+“The connection is taking a moment. I’ll leave the transfer open and return to it.” Continue the pitch. Only describe an arrival after the receipt is visible; do not click Send repeatedly or pass a recording off as the current transfer.
+
+SOURCES — FOR REFERENCE, NOT SPOKEN
+CBBH · IPS BiH launch, 20 July 2026
+https://www.cbbh.ba/press/ShowNews/1798
+
+CBBH · Financial-law package adopted, 28 July 2026
+https://www.cbbh.ba/press/ShowNews/1804
+
+Parliament of FBiH · Payment-services reform and PSD2 alignment
+https://parlamentfbih.gov.ba/v2/userfiles/file/Materijali%20u%20proceduri_2026/293-26-P_Z_%20O%20PLATNIM%20USLUGAMA-B.pdf
+
+CBBH · SEPA application, 6 August 2026
+https://www.cbbh.ba/press/ShowNews/1808?lang=en
+
+Traction: https://neylo.xyz/api/pitch/metrics — production completed-participant aggregates, not demo activity.
+Always disclose simulated financial execution before demonstrating the product. Read current metrics from the screen; never memorize a count.
