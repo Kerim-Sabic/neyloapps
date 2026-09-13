@@ -19,7 +19,7 @@ export function BottomSheet({ open, title, onClose, children, closeLabel='Close 
     };
     const observer = new ResizeObserver(place); if (phone) observer.observe(phone); observer.observe(element);
     window.addEventListener('resize', place); window.addEventListener('scroll', place); place();
-    return () => { observer.disconnect(); window.removeEventListener('resize', place); window.removeEventListener('scroll', place); element.close(); document.body.style.overflow = previous; if (opener?.isConnected) opener.focus({ preventScroll: true }); };
+    return () => { observer.disconnect(); window.removeEventListener('resize', place); window.removeEventListener('scroll', place); element.close(); document.body.style.overflow = previous; if (opener?.isConnected) opener.focus({ preventScroll: true }); else phone?.querySelector<HTMLElement>('.shared-connection button, .demo-app-foot button')?.focus({ preventScroll: true }); };
   }, [open]);
   return <dialog ref={dialog} className="demo-sheet" aria-labelledby="demo-sheet-title" onKeyDown={event => {
     if (event.key !== 'Tab') return;
