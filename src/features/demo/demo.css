@@ -1,3 +1,4 @@
+body:has([data-neylo-demo])::before { display:none; }
 /* The public experience owns its canvas; acquisition pages retain their chrome. */
 body:has([data-neylo-demo]) > .site-header, body:has([data-neylo-demo]) > .site-footer { display: none; }
 .neylo-demo { --demo-bg:#050913; --demo-raised:#0a1222; --demo-surface:#111d33; --demo-text:#f3f6ff; --demo-secondary:#a5b5ce; --demo-quiet:#8194b2; --demo-action:#3457d5; --demo-highlight:#7598ff; --demo-arrival:#71d7e8; --demo-border:#243149; --demo-ease:cubic-bezier(.22,1,.36,1); color:var(--demo-text); background:var(--demo-bg); min-height:100dvh; font-size:16px; line-height:1.5; padding:32px 5vw; }
