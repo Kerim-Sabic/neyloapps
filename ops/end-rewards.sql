@@ -1,0 +1,40 @@
+begin;
+do $$ declare v_actor uuid; v_count bigint; v_minor bigint; v_fingerprint text; v_founders integer; begin
+  perform 1 from public.campaign_state where id='founding' for update;
+  if exists(select 1 from public.campaign_state where id='founding' and rewards_ended_at is not null) then return; end if;
+  select id into strict v_actor from auth.users where lower(email)='kerim@horalix.com' and email_confirmed_at is not null;
+  perform public.neylo_require_admin(v_actor,true);
+  select count(*),coalesce(sum(amount_minor),0),md5(coalesce(jsonb_agg(to_jsonb(c) order by id)::text,'[]'))
+    into v_count,v_minor,v_fingerprint from public.credit_entries c;
+  select allocated_founders into v_founders from public.campaign_state where id='founding';
+  insert into public.campaign_versions(id,welcome_minor,referral_minor,referral_cap,founder_cap,terms_body,privacy_body,eligibility_region,minimum_age,starts_at,published_at)
+    select 'waitlist-2026-09-13-v1',welcome_minor,referral_minor,referral_cap,founder_cap,'NEYLO early access — waitlist terms
+
+Operator: Horalix d.o.o., Maglajska 1, Sarajevo, Bosnia and Herzegovina.
+
+Joining and reserving your identity
+The waitlist is open to adults aged 18 or older worldwide. Choose an available handle and verify your email to complete your account. One account per participant. A temporary handle hold lasts 15 minutes; your handle is reserved when your account is successfully completed. Staff, test and compensated participation are recorded separately.
+Your handle is a reservation within NEYLO, not a currently functioning payment address or ownership of the name elsewhere. The NEYLO identity card is not an issued payment card. Future financial services may have separate availability and eligibility requirements. Joining the waitlist does not promise service availability in any country or a launch date.
+
+Promotion closed
+The founding welcome and referral credit promotion ended on 13 September 2026. Joining the waitlist, completing an account or referring a friend after closure does not earn new promotional credits. Invitations remain available to help other people join the waitlist.
+Credits already granted before closure are preserved. Their amounts, history and original restrictions remain unchanged. Historical accepted terms remain available through the account''s terms-version link.
+
+Previously reserved credits
+Existing credits remain reserved promotional launch fee entitlements denominated in BAM, displayed as KM. They are not cash, a deposit, stored money or funds spendable today. They cannot be withdrawn, transferred, sold or exchanged for cash. They can be used only for eligible NEYLO service fees when those services become available. Third-party bank, network and foreign-exchange charges are excluded unless a separately published offer expressly includes them.
+Previously reserved credits do not expire. Until an eligible service is available, they remain reserved and unusable. If an eligible service does not launch, there is no service fee against which to use them and no cash alternative. Incorrect grants can be corrected only by an auditable reversal; existing entries are not silently edited.
+
+Your account and choices
+No purchase, deposit, phone number, password, survey, bank details, contact upload or marketing subscription is required to join. Optional pilot interest and marketing choices are separate from account completion. Your account shows your reserved handle, invitation and any previously earned credits. You may request a review, correction or account deletion through support and account settings.
+Email verification confirms inbox access. Duplicate or abusive signups may be reviewed. The operator may pause new enrollment without deleting existing accounts or changing earned credit entries.
+
+Support: kerim@horalix.com.',privacy_body,eligibility_region,minimum_age,now(),now()
+    from public.campaign_versions where id=(select active_version from public.campaign_state where id='founding');
+  update public.campaign_state set rewards_ended_at=now(),active_version='waitlist-2026-09-13-v1',updated_at=now() where id='founding';
+  if v_fingerprint<>(select md5(coalesce(jsonb_agg(to_jsonb(c) order by id)::text,'[]')) from public.credit_entries c)
+    or v_founders<>(select allocated_founders from public.campaign_state where id='founding') then raise exception 'HISTORICAL_ENTITLEMENTS_CHANGED'; end if;
+  insert into public.admin_audit_log(actor_id,action,target_id,reason,details)
+    values(v_actor,'rewards_ended','founding','Owner requested ending new welcome and referral rewards; preserve all previously earned credits.',
+    jsonb_build_object('endedAt',now(),'ledgerEntries',v_count,'reservedMinor',v_minor,'ledgerFingerprint',v_fingerprint,'allocatedFounders',v_founders,'waitlistVersion','waitlist-2026-09-13-v1'));
+end; $$;
+commit;

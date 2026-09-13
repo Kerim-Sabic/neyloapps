@@ -6,7 +6,7 @@
 |---|---|---|
 | Cloudflare | Worker `neylo`; account `edda2b12d52321e4df2012e196b33640` | Workers Free; apex and www custom domains |
 | Cloudflare DNS | Zone `764d6c46d80d8871f455b1b73d8aeb9d` | Active Free zone; approved nameservers elias.ns.cloudflare.com and tara.ns.cloudflare.com |
-| Supabase | `neylo`, project `tfphopejudgbfrucdxsy` | Free, Ireland, Postgres 17, five applied migrations |
+| Supabase | `neylo`, project `tfphopejudgbfrucdxsy` | Free, Ireland, Postgres 17; ordered migration history in the repository |
 | Resend | `notify.neylo.xyz`, domain `7d157752-07fd-4d41-a584-d2da09b505b0` | Verified domain and sending-only key restricted to this subdomain |
 | Namecheap | `neylo.xyz` | Registration retained; no transfer |
 
@@ -34,7 +34,9 @@ The authorized deployment machine has ignored `.env.production.secrets.json`, `.
 
 ## Migrations and recovery
 
-Apply the ordered five SQL files in `supabase/migrations` to the intended project using the Supabase CLI or SQL editor. The live project already has all five versions recorded; do not reapply the combined fresh-schema script to it. `ops/bundle-migrations.ts` creates a bundle for a **fresh** project only. Generated database types are in `src/lib/database.generated.ts`.
+Apply unapplied SQL files in `supabase/migrations` in order to the intended project using the Supabase CLI or SQL editor, and record their versions. Compare against `supabase_migrations.schema_migrations` first; do not reapply the combined fresh-schema script to an existing project. `ops/bundle-migrations.ts` creates a bundle for a **fresh** project only. Generated database types are in `src/lib/database.generated.ts`.
+
+New reward issuance ended on 13 September 2026 while signup stayed open. Migration 009 supplies the permanent cutoff guards; `ops/end-rewards.sql` performs the audited closure and policy publication. Existing ledger entries are preserved. Applying the structural migration alone does not close rewards. See [waitlist release](waitlist-transition.md) for the exact cutoff, checks and historical-policy behavior. An application rollback must retain compatible waitlist copy and must never advertise a closed promotion.
 
 Database operations are transactional. Recovery from an interrupted browser completion is an idempotent finalization call with the same pending cookie and verified provider account. Expired holds require selecting an available handle again. Reversals append negative ledger entries; they never edit grants or reopen consumed campaign/referral slots.
 

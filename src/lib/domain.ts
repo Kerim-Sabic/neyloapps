@@ -14,7 +14,7 @@ export function formatCredit(minor: number) {
 }
 
 export const campaignSchema = z.object({
-  version: z.string(), open: z.boolean(), remaining: z.number().int(), region: z.string().nullable(), minimumAge: z.number(),
+  rewardsEndedAt:z.string().nullable().optional(), version: z.string(), open: z.boolean(), remaining: z.number().int(), region: z.string().nullable(), minimumAge: z.number(),
   terms: z.string(), privacy: z.string(), publishedAt: z.string().nullable(),
 });
 export type Campaign = z.infer<typeof campaignSchema>;
@@ -26,13 +26,13 @@ export const accountSchema = z.object({
   handle:z.string(),email:z.string(),completedAt:z.string(),cohort:cohortSchema,founderOrdinal:z.number().nullable(),
   eligibility:z.enum(['eligible','excluded','review_required']),termsVersion:z.string(),acceptedAt:z.string().nullable(),
   inviteCode:invitationCodeSchema,referralSlots:z.number(),totalMinor:z.number(),welcomeMinor:z.number(),referralMinor:z.number(),
-  canInviteForReward:z.boolean(),analyticsConsent:z.boolean(),marketingConsent:z.boolean(),pilotInterest:z.boolean(),deletionStatus:z.string().nullable(),
+  rewardsEndedAt:z.string().nullable().optional(),canInviteForReward:z.boolean(),analyticsConsent:z.boolean(),marketingConsent:z.boolean(),pilotInterest:z.boolean(),deletionStatus:z.string().nullable(),
   entries:z.array(z.object({id:z.string(),type:z.enum(['welcome','referral','reversal']),amountMinor:z.number(),createdAt:z.string()})),
   referrals:z.array(z.object({id:z.string(),status:z.enum(['pending','qualified','review_required','credited','ineligible']),reason:z.string().nullable(),createdAt:z.string()})),
 });
 export type Account = z.infer<typeof accountSchema>;
 export const metricsSchema = z.object({
-  asOf:z.string(),from:z.string(),to:z.string(),cohort:z.string(),verifiedCompleted:z.number(),lifetimeVerified:z.number(),
+  rewardsEndedAt:z.string().nullable().optional(),asOf:z.string(),from:z.string(),to:z.string(),cohort:z.string(),verifiedCompleted:z.number(),lifetimeVerified:z.number(),
   finalizedHandles:z.number(),foundingAccounts:z.number(),qualifiedReferrals:z.number(),creditedReferrals:z.number(),
   pendingAttempts:z.number(),activeHolds:z.number(),reviewRequired:z.number(),pilotInterest:z.number(),reservedMinor:z.number(),
   grantedMinor:z.number(),reversedMinor:z.number(),configuredCeilingMinor:z.number(),remainingFounders:z.number(),paused:z.boolean(),demoCompletions:z.number(),

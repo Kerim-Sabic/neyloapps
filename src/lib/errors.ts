@@ -9,7 +9,7 @@ export const messages: Record<string,string> = {
   PENDING_EMAIL_MISMATCH:'Use the same email to finish this reservation, or start again in a new browser session.',
   SIGN_IN_REQUIRED:'An account already exists for this email. Use Sign in to return to it.',
   ALREADY_COMPLETED:'Your account is already complete. Open My account.',
-  TERMS_CHANGED:'The offer terms changed. Refresh and review the current terms before continuing.',
+  TERMS_CHANGED:'The terms changed. Refresh and review the current waitlist terms before continuing.',
   RATE_LIMITED:'Please wait before trying again. Verification emails can be requested once per minute.',
   INVALID_CODE:'That code is incorrect or expired. Check your latest email, or request a new code.',
   EMAIL_UNAVAILABLE:'The email provider could not accept your request. Your handle is held; try sending the code again.',

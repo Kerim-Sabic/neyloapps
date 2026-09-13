@@ -1,66 +1,128 @@
-# NEYLO
+<p align="center">
+  <a href="https://neylo.xyz">
+    <img src="docs/assets/neylo-hero.gif" width="1200" alt="NEYLO — One address for money. An animated sapphire identity card and a journey from identity to destination. Join the waitlist." />
+  </a>
+</p>
 
-The deployed early-access identity and referral product at **https://neylo.xyz**.
+<p align="center">
+  <strong>Your name. Your money address.</strong><br />
+  Reserve your @handle. Explore a more considered way to move money.
+</p>
 
-Next.js App Router / React / TypeScript, Cloudflare Workers, managed Supabase Postgres and email OTP, and Resend SMTP. The card is a real responsive component. Accounts, handles, invitations, and promotional entitlements are server-authoritative.
+<p align="center">
+  <a href="https://neylo.xyz"><strong>Join the waitlist ↗</strong></a>&nbsp;&nbsp; · &nbsp;&nbsp;
+  <a href="https://neylo.xyz/app/demo">Try the product</a>&nbsp;&nbsp; · &nbsp;&nbsp;
+  <a href="https://neylo.xyz/pitch">Explore the pitch</a>&nbsp;&nbsp; · &nbsp;&nbsp;
+  <a href="docs/assets/neylo-hero.png">Still artwork</a>
+</p>
 
-## Production
+---
 
-- App: https://neylo.xyz
-- Account / sign-in: https://neylo.xyz/account and https://neylo.xyz/signin
-- Private validation: https://neylo.xyz/admin/validation
-- Operator-only registered emails: https://neylo.xyz/admin/accounts
-- Authenticated aggregate presentation: https://neylo.xyz/judge
-- Owner: `kerim@horalix.com`, operator membership established only after real provider email verification.
-- Operator: Horalix d.o.o., Maglajska 1, Sarajevo, Bosnia and Herzegovina.
+### 80 waitlist participants in one day.
 
-The first 100 eligible verified founding accounts receive 100 KM in reserved launch fee credits. Each eligible founder can earn three 50 KM referral grants, up to 250 KM total. Sharing or opening an invitation earns nothing. Credits are not cash or spendable funds. Published rules are versioned in Postgres; the owner approved `founding-v1`.
+**Launch day · 12 September 2026 · UTC**
 
-Visitors see approximate local-currency equivalents based on trusted Cloudflare country metadata, with a manual display selector. Entitlements and admin accounting remain in BAM. The EUR peg is fixed at 1.95583 BAM per EUR; other display rates come from dated Frankfurter reference quotes. Unknown countries or unavailable/stale rates fall back to KM. See [currency and account-list update](docs/localization-and-accounts.md).
+Recorded completed accounts, excluding staff, tests and unfinished attempts. The total includes **10 signups verified through NEYLO** and **70 previously verified participants imported with the operator’s attestation**. Counts were checked against production records on 13 September 2026; imported completion times retain their supplied provenance. [Current aggregate counts →](https://neylo.xyz/pitch) · [How imports are recorded →](docs/account-imports.md)
 
-## Local development
+---
 
-Use Node 22 or newer, npm, and Docker Desktop. Install the exact lockfile:
+### A product you can use.
+
+NEYLO starts with a personal money address: **@you**. The working early-access product pairs that identity with passwordless accounts, persistent handle reservations and invitations. Its interactive payment experience explores what comes next: selecting a person, choosing a route and following one continuous journey to arrival.
+
+| Start here | What you can do |
+| :--- | :--- |
+| **[The waitlist ↗](https://neylo.xyz)** | Type a handle onto your sapphire identity card, verify your email and reserve your identity. |
+| **[The routing experience ↗](https://neylo.xyz/app/demo)** | Compare calculated routes, change cost or speed preferences, unfold the journey and inspect the receipt. |
+| **[Nadin ↗](https://neylo.xyz/demo/nadin) · [Kerim ↗](https://neylo.xyz/demo/kerim)** | Pair two browser sessions and watch the same transfer progress between both participants. |
+| **[The pitch ↗](https://neylo.xyz/pitch)** | Explore the product story, working experiences and current aggregate signup counts. |
+
+For the connected experience, open **Nadin → Connect the two pages**, then open its pairing link or scan the QR on the second device. Both screens share the same isolated session. [Presentation guide →](docs/connected-demo.md)
+
+**Execution boundary:** accounts and waitlist records are real. Financial execution in the product experiences is simulated; bank and payment-provider integrations are not connected. Demo activity stays separate from real account and acquisition records.
+
+### Small details. Deliberate engineering.
+
+- **An identity that responds.** A real DOM card, immediate handle preview, restrained depth, pointer tilt and reduced-motion support.
+- **One continuous journey.** Persistent recipient, amount, selected route and reference. Shared nodes unfold into tracking without replacing the app.
+- **Numbers that reconcile.** Integer minor units, explicit rounding, centralized fixture fees and FX, and route ranking by actual calculations.
+- **State that survives.** Guarded transitions, deduplicated confirmation, ordered events, interruption recovery and versioned demo storage.
+- **A clear boundary around real data.** Postgres transactions protect reservations; managed authentication protects accounts; operator and presenter access are distinct.
+
+### Inside the system.
+
+![NEYLO architecture: one application with separate account, routing and connected-demo state](docs/assets/neylo-system.svg)
+
+| Layer | Implementation |
+| :--- | :--- |
+| Interface | Next.js App Router, React, TypeScript, Geist, Motion |
+| Application runtime | Cloudflare Workers through the vinext adapter |
+| Identity and persistence | Supabase email OTP, Postgres, constraints, transactions and RLS |
+| Transactional email | Resend SMTP on the verified NEYLO sending domain |
+| Connected presentation | A separate Cloudflare Durable Object with expiring paired sessions |
+| Validation | Authenticated aggregates and CSV; registered emails restricted to the operator |
+
+<details>
+<summary><strong>Repository map</strong></summary>
+
+```text
+src/app/                  Routes, metadata and API handlers
+src/features/signup/      Waitlist and email-code completion
+src/features/card/        Interactive sapphire identity
+src/features/account/     Persistent account and invitations
+src/features/admin/       Private validation and operations
+src/features/demo/        Quotes, state machine and route journey
+src/features/demo/shared/ Paired participant experience
+src/features/pitch/       Presentation and aggregate metrics
+src/core/                 Authentication, configuration and security
+supabase/migrations/      Ordered database changes
+tests/                    Unit and isolated database verification
+ops/                      Build, deployment and operational tools
+docs/                     Architecture, boundaries and test evidence
+```
+
+</details>
+
+### Run it locally.
+
+**Node.js 22+ · npm · Docker Desktop**
 
 ```sh
 npm ci
 npx supabase start
 npx supabase status --output json > .env.local-status.json
-```
-
-The helper below reads the ignored local status file and writes `.env.local` and `.dev.vars` with the local URL/keys, a new random rate-limit secret, and approved campaign configuration. The local readiness flags enable Mailpit capture only, not external delivery. Do not use production keys for local testing. `.env.example` documents all configuration fields for manual setup.
-
-```sh
 npx tsx ops/prepare-local.ts
 npm run dev
 ```
 
-Local app: http://127.0.0.1:3100. Local Supabase: http://127.0.0.1:55421. Mailpit: http://127.0.0.1:55424. Postgres port: 55422. `prepare-local.ts` refuses to change a database with completed accounts.
+Open **[localhost:3100](http://127.0.0.1:3100)**. Local verification emails appear in **[Mailpit](http://127.0.0.1:55424)**. Supabase runs on port `55421`; Postgres uses `55422`.
 
-## Checks
+The setup helper creates ignored local configuration and refuses to modify a database with completed accounts. Use local credentials for development; [`.env.example`](.env.example) documents the required fields. The connected demo needs the Cloudflare runtime; see its [local setup](docs/connected-demo.md).
 
-```sh
-npm run typecheck
-npm test
-npm run test:db
-```
-
-**The database suite resets the isolated local fixture.** It rejects non-local database targets. Run it before creating manual browser test accounts. It exercises actual Postgres transactions, concurrency, retries, RLS, permission boundaries, exclusions, reversals, and deletion workflows. Nine focused unit tests cover parsing, money conversion, country mapping, unavailable rates, input boundaries and filters.
-
-The additive account-directory check, `npx tsx tests/database/registered-accounts.ts`, preserves existing local accounts. Its fixtures roll back after testing operator/presenter boundaries, verified completion, search and pagination. It applies migration 006 locally if missing.
-
-Browser verification uses real local provider OTPs captured by Mailpit in two separate cookie origins (`127.0.0.1` and `localhost`). `ops/capture-browser-data.ts` reconciles those completed records and CSV totals; it is a local-only evidence helper, not a simulated production signup. See [verification](docs/verification.md) for exact coverage and limitations.
-
-## Deployment and operations
-
-See [runbook](docs/operations.md), [architecture](docs/architecture.md), [reference audit](docs/reference-audit.md), and [implementation checklist](docs/implementation-checklist.md).
-
-The production adapter is vinext with the Cloudflare Vite plugin. Native Next development is the default. The adapter is beta: keep the lockfile pinned and run the production-origin smoke checks after upgrades.
+### Verify. Build. Ship.
 
 ```sh
-npm run deploy:vinext
+npm run check              # TypeScript + 43 tests
+npm run test:db            # Resets the isolated local database fixture
+npm run build:production   # Builds for the configured production backend
+npm run deploy:vinext      # Builds and deploys through authenticated Wrangler
 ```
 
-This explicitly builds with the intended managed backend and deploys that exact artifact through Wrangler. Never replace it with an implicit rebuild using local environment values. No production secrets are committed. This repository's CI validates source; deployment is an explicit authenticated operator command.
+The current checks cover input validation, money calculations, routing, state recovery, shared sessions, metric boundaries and waitlist closure. Database verification additionally exercises transactions, concurrency, permissions and accounting invariants. Historical browser coverage and its device limitations are recorded in the guides below.
 
-There are no live transfers, issued payment cards, or spendable wallets in this release.
+Production builds require the authorized machine’s ignored configuration. Deployment uses the existing Cloudflare project and domain; migrations are applied separately. The vinext adapter is beta, so keep the lockfile pinned and check the production route and referenced assets after deployment. GitHub Actions validates source; it does not automatically deploy.
+
+---
+
+<p align="center">
+  <a href="docs/architecture.md">Architecture</a>&nbsp; · &nbsp;
+  <a href="docs/operations.md">Operations</a>&nbsp; · &nbsp;
+  <a href="docs/verification.md">Verification</a>&nbsp; · &nbsp;
+  <a href="docs/product-demo.md">Product experience</a>&nbsp; · &nbsp;
+  <a href="docs/waitlist-transition.md">Waitlist release</a>
+</p>
+
+<p align="center">
+  <sub>Designed and built for NEYLO · Operated by Horalix d.o.o. · Sarajevo, Bosnia and Herzegovina</sub><br />
+  <a href="https://neylo.xyz"><strong>One address for money.</strong></a>
+</p>

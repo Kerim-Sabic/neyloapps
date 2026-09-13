@@ -19,11 +19,11 @@ for (let index = 0; index < assets.length; index += 5) {
   })));
 }
 const home = await fetch(origin); const homeHtml = await home.text();
-assert.equal(home.status, 200); assert.match(homeHtml, /Claim my/); assert.doesNotMatch(homeHtml, /data-neylo-demo/);
+assert.equal(home.status, 200); assert.match(homeHtml, /Join the waitlist/); assert.doesNotMatch(homeHtml, /data-neylo-demo/);
 const admin = await fetch(`${origin}/api/admin/accounts`); assert.equal(admin.status, 401);
 const campaign = await fetch(`${origin}/api/campaign`); const campaignBody: unknown = await campaign.json();
 assert.equal(campaign.status, 200);
-const sourceFiles = await readdir('src/features/demo');
+const sourceFiles = (await readdir('src/features/demo',{withFileTypes:true})).filter(entry=>entry.isFile()).map(entry=>entry.name);
 for (const file of sourceFiles) {
   const source = await readFile(`src/features/demo/${file}`, 'utf8');
   assert.doesNotMatch(source, /\bfetch\s*\(|supabase|api\/events|removeItem|localStorage\.clear/, `Isolation: ${file}`);

@@ -125,6 +125,7 @@ export type Database = {
           active_version: string
           allocated_founders: number
           id: string
+          rewards_ended_at: string | null
           paused: boolean
           updated_at: string
         }
@@ -132,6 +133,7 @@ export type Database = {
           active_version: string
           allocated_founders?: number
           id: string
+          rewards_ended_at?: string | null
           paused?: boolean
           updated_at?: string
         }
@@ -139,6 +141,7 @@ export type Database = {
           active_version?: string
           allocated_founders?: number
           id?: string
+          rewards_ended_at?: string | null
           paused?: boolean
           updated_at?: string
         }
@@ -721,6 +724,7 @@ export type Database = {
     Functions: {
       neylo_account: { Args: { p_user_id: string }; Returns: Json }
       neylo_bootstrap_owner: { Args: { p_email: string }; Returns: string }
+      neylo_policy: { Args: { p_version: string }; Returns: Json }
       neylo_pitch_metrics: { Args: never; Returns: Json }
       neylo_campaign: { Args: never; Returns: Json }
       neylo_classify: {

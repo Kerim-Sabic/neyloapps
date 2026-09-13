@@ -1,3 +1,25 @@
+export const waitlistTerms=`NEYLO early access — waitlist terms
+
+Operator: Horalix d.o.o., Maglajska 1, Sarajevo, Bosnia and Herzegovina.
+
+Joining and reserving your identity
+The waitlist is open to adults aged 18 or older worldwide. Choose an available handle and verify your email to complete your account. One account per participant. A temporary handle hold lasts 15 minutes; your handle is reserved when your account is successfully completed. Staff, test and compensated participation are recorded separately.
+Your handle is a reservation within NEYLO, not a currently functioning payment address or ownership of the name elsewhere. The NEYLO identity card is not an issued payment card. Future financial services may have separate availability and eligibility requirements. Joining the waitlist does not promise service availability in any country or a launch date.
+
+Promotion closed
+The founding welcome and referral credit promotion ended on 13 September 2026. Joining the waitlist, completing an account or referring a friend after closure does not earn new promotional credits. Invitations remain available to help other people join the waitlist.
+Credits already granted before closure are preserved. Their amounts, history and original restrictions remain unchanged. Historical accepted terms remain available through the account's terms-version link.
+
+Previously reserved credits
+Existing credits remain reserved promotional launch fee entitlements denominated in BAM, displayed as KM. They are not cash, a deposit, stored money or funds spendable today. They cannot be withdrawn, transferred, sold or exchanged for cash. They can be used only for eligible NEYLO service fees when those services become available. Third-party bank, network and foreign-exchange charges are excluded unless a separately published offer expressly includes them.
+Previously reserved credits do not expire. Until an eligible service is available, they remain reserved and unusable. If an eligible service does not launch, there is no service fee against which to use them and no cash alternative. Incorrect grants can be corrected only by an auditable reversal; existing entries are not silently edited.
+
+Your account and choices
+No purchase, deposit, phone number, password, survey, bank details, contact upload or marketing subscription is required to join. Optional pilot interest and marketing choices are separate from account completion. Your account shows your reserved handle, invitation and any previously earned credits. You may request a review, correction or account deletion through support and account settings.
+Email verification confirms inbox access. Duplicate or abusive signups may be reviewed. The operator may pause new enrollment without deleting existing accounts or changing earned credit entries.
+
+Support: kerim@horalix.com.`;
+
 export const campaignTerms=`NEYLO founding early access — campaign terms
 
 Operator: Horalix d.o.o., Maglajska 1, Sarajevo, Bosnia and Herzegovina.

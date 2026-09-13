@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">NEYLO architecture: one application, separate data boundaries</title>
+  <desc id="desc">A Next.js and React interface on Cloudflare Workers connects to Supabase for real accounts, a local state machine for the routing demo, and a separate Durable Object for paired demo sessions.</desc>
+  <defs><linearGradient id="canvas" x1="0" y1="0" x2="1200" y2="410" gradientUnits="userSpaceOnUse"><stop stop-color="#0A1222"/><stop offset="1" stop-color="#050913"/></linearGradient></defs>
+  <rect width="1200" height="410" rx="16" fill="url(#canvas)"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="600" y="50" fill="#F3F6FF" font-size="24" font-weight="600">neylo.xyz</text>
+    <text x="600" y="81" fill="#A5B5CE" font-size="17">Next.js · React · Cloudflare Workers</text>
+    <path d="M600 103V133M213 166V134H987V166M600 143V166" stroke="#486294" stroke-width="1.5"/>
+    <circle cx="600" cy="134" r="3" fill="#7598FF"/>
+    <g fill="#111D33" stroke="#34465F"><circle cx="213" cy="187" r="13"/><circle cx="600" cy="187" r="13"/><circle cx="987" cy="187" r="13"/></g>
+    <g fill="#7598FF"><circle cx="213" cy="187" r="4"/><circle cx="600" cy="187" r="4"/></g>
+    <circle cx="987" cy="187" r="4" fill="#71D7E8"/>
+    <g fill="#8194B2" font-size="11" letter-spacing="1.7"><text x="213" y="231">REAL ACCOUNT RECORDS</text><text x="600" y="231">LOCAL PRESENTATION STATE</text><text x="987" y="231">SHARED PRESENTATION STATE</text></g>
+    <g fill="#F3F6FF" font-size="23" font-weight="500"><text x="213" y="271">Early access</text><text x="600" y="271">Routing experience</text><text x="987" y="271">Connected experience</text></g>
+    <g fill="#A5B5CE" font-size="17"><text x="213" y="310">Supabase Auth · Postgres · RLS</text><text x="600" y="310">Quote engine · State machine</text><text x="987" y="310">Separate Durable Object</text><text x="213" y="338">Email verification through Resend</text><text x="600" y="338">Versioned browser snapshots</text><text x="987" y="338">Expiring paired sessions</text></g>
+    <path d="M406 222V347M794 222V347" stroke="#1C2B43"/>
+    <text x="600" y="383" fill="#8194B2" font-size="12">Demo events never become real account or acquisition records.</text>
+  </g>
+</svg>
