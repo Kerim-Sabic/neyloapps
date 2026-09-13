@@ -2,7 +2,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 
-export function BottomSheet({ open, title, onClose, children }: { open: boolean; title: string; onClose: () => void; children: ReactNode }) {
+export function BottomSheet({ open, title, onClose, children, closeLabel='Close advanced routing', kicker='YOUR TRANSFER, YOUR CHOICE' }: { open: boolean; title: string; onClose: () => void; children: ReactNode; closeLabel?:string; kicker?:string }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const onCloseRef = useRef(onClose); onCloseRef.current = onClose;
   useEffect(() => {
@@ -28,6 +28,6 @@ export function BottomSheet({ open, title, onClose, children }: { open: boolean;
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   }} onCancel={event => { event.preventDefault(); onCloseRef.current(); }} onClick={event => { if (event.target === dialog.current) onClose(); }}>
-    <div className="demo-sheet-content"><div className="demo-sheet-grip" aria-hidden="true"/><header><div><p className="demo-kicker">YOUR TRANSFER, YOUR CHOICE</p><h2 id="demo-sheet-title">{title}</h2></div><button type="button" className="demo-icon-button" aria-label="Close advanced routing" onClick={onClose}><X size={20}/></button></header>{children}</div>
+    <div className="demo-sheet-content"><div className="demo-sheet-grip" aria-hidden="true"/><header><div><p className="demo-kicker">{kicker}</p><h2 id="demo-sheet-title">{title}</h2></div><button type="button" className="demo-icon-button" aria-label={closeLabel} onClick={onClose}><X size={20}/></button></header>{children}</div>
   </dialog>;
 }
