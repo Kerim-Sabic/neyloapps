@@ -29,6 +29,7 @@ export function AccountView({initial,support,justReserved=false}:{initial:Accoun
     {display.currency!=='BAM'&&<p className="currency-base">Reserved amount: {formatCredit(data.totalMinor)} · display equivalent in {display.currency}.</p>}
 
     <dl className="credit-breakdown"><div><dt>Welcome credit</dt><dd>{credit(data.welcomeMinor)}</dd></div><div><dt>Referral credits</dt><dd>{credit(data.referralMinor)}</dd></div><div><dt>Rewarded friends</dt><dd>{data.referralSlots} / {data.founderOrdinal?3:0}</dd></div></dl></>}
+    <section className="account-section"><p className="eyebrow">A USEFUL FIRST STEP</p><h2>Prepare a bank payment.</h2><p className="small-copy">Create clear BAM instructions, then authorize in your bank app. Neylo does not send or confirm the payment.</p><Link className="button secondary" href="/pay">Open payment planner<ArrowUpRight size={17}/></Link></section>
     <button className="button primary" onClick={share}><Share2 size={17}/>Invite a friend</button>
     {data.eligibility==='review_required'&&<p className="notice">Your account is under review. Your reserved handle is available.</p>}
     {data.eligibility==='excluded'&&<p className="notice">Your handle is reserved. This account is classified separately from independent waitlist participants.</p>}

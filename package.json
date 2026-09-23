@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test:browser": "playwright test",
     "sandbox:payments": "tsx ops/payment-sandbox/run.ts",
     "test:payments": "tsx --test tests/unit/payment-sandbox.test.ts",
     "dev": "next dev --hostname 127.0.0.1 --port 3100",
@@ -45,6 +46,7 @@
     "@axe-core/playwright": "4.13.0",
     "@cloudflare/vite-plugin": "^1.54.8",
     "@electric-sql/pglite": "0.5.8",
+    "@playwright/test": "1.63.0",
     "@types/node": "22.20.2",
     "@types/pg": "8.23.1",
     "@types/pngjs": "6.0.5",
