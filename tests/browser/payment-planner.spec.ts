@@ -53,6 +53,7 @@ test('complete planner flow stays private and never claims execution', async ({ 
   const storage = await page.evaluate(() => JSON.stringify({ local: { ...localStorage }, session: { ...sessionStorage } }));
   expect(storage).not.toMatch(/1290|Test Recipient|Shared meal/);
   expect(errors).toEqual([]);
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `test-results/planner-instructions-${test.info().project.name}.png`, fullPage: true });
   await page.reload();
   await expect(page.getByLabel('Recipient’s full name')).toHaveValue('');
@@ -92,6 +93,7 @@ test('accessible recipient and review screens fit the viewport', async ({ page }
     const audit = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(audit.violations).toEqual([]);
     await page.getByRole('heading', { level: 2 }).focus();
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: `test-results/planner-${screen}-${test.info().project.name}.png`, fullPage: true });
   }
 });
