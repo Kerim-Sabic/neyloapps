@@ -723,6 +723,7 @@ export type Database = {
     }
     Functions: {
       neylo_account: { Args: { p_user_id: string }; Returns: Json }
+      neylo_receiving: { Args: { p_user_id: string; p_action: string; p_data?: Json }; Returns: Json }
       neylo_bootstrap_owner: { Args: { p_email: string }; Returns: string }
       neylo_policy: { Args: { p_version: string }; Returns: Json }
       neylo_pitch_metrics: { Args: never; Returns: Json }

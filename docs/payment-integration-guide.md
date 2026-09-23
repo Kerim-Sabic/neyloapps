@@ -1,5 +1,7 @@
 # Neylo payment integration guide
 
+**Username directory update:** saved, self-declared receiving destinations now have a migration and authenticated APIs. `/pay` resolves exact handles and fills instructions automatically. This is not verified beneficiary enrollment or payment execution. Read [the feature and rollout guide](username-payments.md); its privacy model supersedes the old manual-only assumptions below.
+
 **Audience:** bank/PSP technical, compliance and operations teams. **Status:** integration preparation; no approved or connected payment provider.
 
 ## Current surface

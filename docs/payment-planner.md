@@ -1,5 +1,7 @@
 # A useful first payment journey
 
+**Update:** `/pay` now defaults to usernames. This document describes the manual-entry fallback. See [username payments](username-payments.md) for saved receiving accounts, privacy, schema and rollout requirements.
+
 **23 September 2026 · `/pay` · bank instructions, not integrated execution**
 
 ## What you can do

@@ -10,6 +10,9 @@ export type PaymentPlan = {
   amountMinor: number;
   currency: 'BAM';
   note: string;
+  recipientHandle?: string;
+  bankName?: string;
+  bic?: string;
 };
 export type PlanStatus = 'prepared' | 'reported_sent';
 
@@ -75,7 +78,9 @@ export function instructions(plan: PaymentPlan, status: PlanStatus): string {
     'NEYLO — BANK PAYMENT PLAN',
     'Not proof of payment. Neylo has not moved or verified any money.',
     `Status: ${status === 'reported_sent' ? 'Reported sent by you; not bank-confirmed' : 'Prepared; not sent'}`,
-    `Recipient (entered by you): ${plan.recipient.name}`,
+    `Recipient (${plan.recipientHandle ? 'supplied by @'+plan.recipientHandle+'; not bank-verified' : 'entered by you'}): ${plan.recipient.name}`,
+    ...(plan.bankName ? [`Bank (recipient supplied): ${plan.bankName}`] : []),
+    ...(plan.bic ? [`SWIFT / BIC: ${plan.bic}`] : []),
     `IBAN: ${formattedIban(plan.recipient.iban)}`,
     `Domestic account number: ${plan.recipient.iban.slice(4)}`,
     `Payment amount: ${bam(plan.amountMinor)}`,

@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { readFile } from 'node:fs/promises';
 
 async function recipient(page: Page) {
+  if(await page.getByRole('button',{name:'Use bank details instead',exact:true}).isVisible()) await page.getByRole('button',{name:'Use bank details instead',exact:true}).click();
   await page.getByLabel('Recipient’s full name').fill('Test Recipient');
   // Published IBAN-format example, not an account to send money to.
   await page.getByLabel('Bosnian IBAN').fill('BA39 1290 0794 0102 8494');
@@ -56,11 +57,12 @@ test('complete planner flow stays private and never claims execution', async ({ 
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `test-results/planner-instructions-${test.info().project.name}.png`, fullPage: true });
   await page.reload();
-  await expect(page.getByLabel('Recipient’s full name')).toHaveValue('');
+  await expect(page.getByLabel('Recipient’s username')).toHaveValue('');
 });
 
 test('validation and editing do not preserve stale recipient confirmation', async ({ page }) => {
   await page.goto('/pay');
+  await page.getByRole('button',{name:'Use bank details instead',exact:true}).click();
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page.getByRole('main').getByRole('alert')).toBeFocused();
   await recipient(page);

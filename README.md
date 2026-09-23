@@ -1,4 +1,19 @@
-## New: a practical first payment journey
+## New: pay a person, not an account number
+
+**Add your bank once → friends enter @username → receiving details fill automatically.**
+
+- **Account setup:** save an account-holder name, BAM IBAN, bank and optional SWIFT/BIC behind your reserved username.
+- **Username-first send:** authenticated exact-handle lookup, recipient card, amount and review. Expand the receiving route to see the bank and masked account.
+- **Safe updates:** explicit sharing opt-in, recent sign-in for changes, rate limits and revision checks before revealing instructions.
+- **Honest status:** recipient-supplied accounts remain unverified. Users authorize in their own bank; Neylo cannot yet execute transfers.
+
+[Username feature & rollout guide](docs/username-payments.md) · [Bank/PSP integration guide](docs/payment-integration-guide.md)
+
+Run locally and open `/pay/preview`, then try **@nadin** for an explicitly labeled example. Real `/pay` lookup uses authenticated accounts and requires the new reviewed migration plus server-only `RECEIVING_ACCOUNTS_ENABLED=true`. **The migration has not been applied to production.**
+
+![Username-first Neylo preview, using example recipient data](docs/assets/username-payments.png)
+
+## Manual bank-instruction fallback
 
 **Prepare → review → finish in your bank.** The new `/pay` experience helps users prepare small BAM payments with clear recipient details, copyable bank instructions and a downloadable plan. Its responsive sapphire interface includes accessible controls, short transitions and reduced-motion support.
 
@@ -6,7 +21,7 @@
 
 | Works now in this branch | Still requires an approved provider |
 | :--- | :--- |
-| Recipient name + Bosnian IBAN checksum validation | Verified account ownership and @handle destinations |
+| Recipient name + Bosnian IBAN checksum validation | Bank-verified account ownership |
 | Exact 1–100 BAM amount entry and review | Bank/card funding authorization |
 | Copy instructions and download a private payment plan | Integrated execution and recipient payout |
 | Personal “reported sent” status, explicitly unconfirmed | Authoritative bank status, reconciliation and refunds |
@@ -22,7 +37,7 @@ npm run dev
 # Open http://127.0.0.1:3100/pay
 ```
 
-The planner needs no Supabase or payment-provider credentials. Existing account features retain their normal configuration. Verify with `npm run check`; install Chromium with `npx playwright install chromium`, then run `npm run test:browser`. Browser coverage includes desktop, mobile/reduced motion, accessibility, exports and data staying out of network requests and browser storage.
+The manual fallback and labeled preview need no Supabase or payment-provider credentials. Existing account features retain their normal configuration. Verify with `npm run check`; install Chromium with `npx playwright install chromium`, then run `npm run test:browser`. Browser coverage includes desktop, mobile/reduced motion, accessibility, exports and data staying out of network requests and browser storage.
 
 ---
 
