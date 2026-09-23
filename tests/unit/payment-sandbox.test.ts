@@ -54,6 +54,7 @@ test('Payment contract: durable funding, disbursement, uncertainty and refund',a
     await t.test('Rejected payout preserves the liability until an independently confirmed refund',async()=>{
       const p=await s.create('alice',randomUUID(),{...input,amountMinor:1000});await deliver(s,await s.simulateProvider(p.id,'funding'));
       await s.dispatch(p.id,secret,{fail:true});assert.equal((await s.get(p.id)).state,'refund_pending');assert.equal((await s.reconcile()).pendingMinor,1000);
+      await assert.rejects(()=>s.dispatch(p.id,secret,{fail:true}),/INVALID_SIMULATION_ACTION/);
       await s.dispatch(p.id,secret,{loseResponse:true});assert.equal((await s.get(p.id)).state,'refund_pending');
       await s.dispatch(p.id,secret);assert.equal((await s.get(p.id)).state,'refunded');assert.equal((await s.reconcile()).matched,true);
       const paid=await s.simulateProvider(p.id,'payout');assert.equal(paid.type,'payout_failed');
@@ -87,6 +88,7 @@ test('Payment contract: durable funding, disbursement, uncertainty and refund',a
         assert.equal((await post('/webhook',{})).status,401);
         assert.equal((await post('/transfers',{...input,padding:'x'.repeat(5000)})).status,413);
         const p=await(await post('/transfers',input)).json();assert.equal(p.state,'awaiting_funding');
+        assert.equal((await post('/simulate',{id:p.id,action:'pay'})).status,409);
         assert.equal((await(await post('/simulate',{id:p.id,action:'fund'})).json()).state,'payout_pending');
         assert.equal((await(await post('/simulate',{id:p.id,action:'lose-response'})).json()).state,'payout_unknown');
         assert.equal((await(await post('/simulate',{id:p.id,action:'recover'})).json()).state,'completed');

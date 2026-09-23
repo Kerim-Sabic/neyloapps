@@ -31,6 +31,9 @@ export async function startSandbox(engine: PaymentSandbox, port = 0) {
       if(path.startsWith('/transfers/') && req.method==='GET') {json(await engine.get(path.slice('/transfers/'.length)));return;}
       if(path==='/simulate' && req.method==='POST') {
         const p=z.object({id:z.string().uuid(),action:z.enum(['fund','pay','fail','lose-response','recover','refund'])}).strict().parse(JSON.parse(await read(req)));
+        const current=await engine.get(p.id);
+        const allowed:Record<string,string[]>={awaiting_funding:['fund'],payout_pending:['pay','fail','lose-response'],payout_unknown:['recover'],refund_pending:['refund']};
+        if(!allowed[current.state]?.includes(p.action))throw new SandboxError('INVALID_SIMULATION_ACTION');
         if(p.action==='fund') {const e=await engine.simulateProvider(p.id,'funding'),raw=JSON.stringify(e),ts=String(Date.now());await engine.webhook(raw,ts,sign(raw,ts,secret),secret);}
         else await engine.dispatch(p.id,secret,{fail:p.action==='fail',loseResponse:p.action==='lose-response'});
         json(await engine.get(p.id));return;

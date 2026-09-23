@@ -120,6 +120,7 @@ export class PaymentSandbox {
   async dispatch(id: string,secret: string,options: {fail?:boolean;loseResponse?:boolean} = {}) {
     const t=await this.get(id), kind=t.state==='refund_pending'?'refund':'payout';
     if (!['payout_pending','payout_unknown','refund_pending'].includes(t.state)) throw new SandboxError('NO_WORK');
+    if (kind==='refund' && options.fail) throw new SandboxError('INVALID_SIMULATION_ACTION');
     const e=await this.simulateProvider(id,kind,options.fail);
     if(options.loseResponse) {
       await this.db.transaction(async tx=>{
@@ -134,9 +135,11 @@ export class PaymentSandbox {
     return this.webhook(raw,timestamp,sign(raw,timestamp,secret),secret);
   }
   async reconcile() {
-    const cash=(await this.db.query<{value:number}>("select coalesce(sum(case when debit='partner_cash' then amount_minor else -amount_minor end),0)::integer value from sandbox.journals")).rows[0]!.value;
-    const partner=(await this.db.query<{value:number}>('select coalesce(sum(cash_delta),0)::integer value from sandbox.provider_operations')).rows[0]!.value;
-    const pending=(await this.db.query<{value:number}>("select coalesce(sum(amount_minor),0)::integer value from sandbox.transfers where state in ('payout_pending','payout_unknown','refund_pending')")).rows[0]!.value;
-    return {currency:'BAM',cashMinor:cash,partnerCashMinor:partner,pendingMinor:pending,differenceMinor:cash-partner,matched:cash===partner&&cash===pending};
+    return this.db.transaction(async tx=>{
+      const cash=(await tx.query<{value:number}>("select coalesce(sum(case when debit='partner_cash' then amount_minor else -amount_minor end),0)::integer value from sandbox.journals")).rows[0]!.value;
+      const partner=(await tx.query<{value:number}>('select coalesce(sum(cash_delta),0)::integer value from sandbox.provider_operations')).rows[0]!.value;
+      const pending=(await tx.query<{value:number}>("select coalesce(sum(amount_minor),0)::integer value from sandbox.transfers where state in ('payout_pending','payout_unknown','refund_pending')")).rows[0]!.value;
+      return {currency:'BAM',cashMinor:cash,partnerCashMinor:partner,pendingMinor:pending,differenceMinor:cash-partner,matched:cash===partner&&cash===pending};
+    });
   }
 }
