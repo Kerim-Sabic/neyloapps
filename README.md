@@ -1,3 +1,17 @@
+## New: real two-account local pilot
+
+You can now exercise **signup → real local email verification → save receiving account → another user pays by @handle** against local Supabase, without mocked API responses. Money movement remains disabled.
+
+```sh
+npm run pilot:setup
+npm run pilot:local
+# App: http://127.0.0.1:3100 · Local email inbox: http://127.0.0.1:55424
+# Stop the app, then run the repeatable integration check:
+npm run pilot:test
+```
+
+Use fictional accounts only. [Pilot walkthrough, verified behavior and remaining release gates](docs/local-pilot.md). The test uses real OTP cooldowns, takes around 70 seconds, and is included in GitHub Actions. Database advisors passed locally; database types now come from the actual migrated schema. Hosted staging and live transfers remain pending.
+
 ## New: Bosnia first, international by design
 
 The username flow now carries **bank country + account currency**, with BAM as the default. Account owners choose the currency their account actually accepts; senders get it automatically through the username.

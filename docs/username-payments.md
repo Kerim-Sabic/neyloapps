@@ -38,12 +38,12 @@ Because no payment provider is connected, account details still appear in final 
 
 ## Enable on an environment
 
-This delivery **does not apply the migration or enable collection in production**.
+This delivery **does not apply the migration or enable collection in production**. The [real local pilot](local-pilot.md) now verifies the two-user journey and schema locally; hosted staging is still required.
 
 1. Review `supabase/migrations/20260923224458_receiving_accounts.sql` and the following international receiving-accounts migration in a staging Supabase project. Back up and review grants/retention before applying it through the normal migration process.
 2. Keep existing authentication, same-origin and rate-limit configuration. Set server-only `RECEIVING_ACCOUNTS_ENABLED=true` only after the migration and privacy notice are ready.
 3. Test with two actual staged authenticated users: owner saves/opts in; sender finds owner; stale revision fails; private/removed account cannot be found; owner signs in again before changing details.
-4. Run Supabase security advisors and regenerate database types from that migrated environment. This branch includes the RPC type declaration; full hosted schema generation is still a staging task.
+4. Run Supabase security advisors and regenerate database types from that migrated environment. Types have now been regenerated from actual local Supabase. Compare/regenerate against the migrated hosted staging environment before rollout.
 5. Deploy the application. This flag enables directory/instruction storage only; it cannot enable live money execution.
 
 If the flag is absent, saving and lookup fail closed. The manual planner and reserved identities remain available. No secrets or real bank data are included in the repository.

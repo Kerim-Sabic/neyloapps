@@ -26,3 +26,5 @@
 .landing .waitlist-faq{margin-top:72px}
 .card-stage .card-waitlist{font-size:clamp(18px,3.8vw,28px);letter-spacing:-.04em;line-height:1.2}
 @media(max-width:767px){.landing .waitlist-faq{margin-top:48px}.card-stage .card-waitlist{font-size:19px}}
+
+.local-pilot-banner{padding:12px 20px;text-align:center;background:#142640;color:#d8e5ff;border-bottom:1px solid #405777;font-size:12px;line-height:1.6}

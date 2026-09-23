@@ -20,7 +20,10 @@
     "start:vinext": "wrangler dev --config dist/server/wrangler.json",
     "deploy:vinext": "tsx ops/deploy-production.ts",
     "build:production": "tsx ops/build-production.ts",
-    "admin:bootstrap": "tsx ops/bootstrap-owner.ts"
+    "admin:bootstrap": "tsx ops/bootstrap-owner.ts",
+    "pilot:local": "tsx ops/local-pilot.ts serve",
+    "pilot:test": "tsx ops/local-pilot.ts test",
+    "pilot:setup": "tsx ops/pilot-stack.ts"
   },
   "engines": {
     "node": ">=22.0.0"
