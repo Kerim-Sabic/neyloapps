@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sandbox:payments": "tsx ops/payment-sandbox/run.ts",
+    "test:payments": "tsx --test tests/unit/payment-sandbox.test.ts",
     "dev": "next dev --hostname 127.0.0.1 --port 3100",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3100",
