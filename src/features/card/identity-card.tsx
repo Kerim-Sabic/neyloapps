@@ -10,14 +10,16 @@ type CardProps={handle:string;state:'preview'|'held'|'reserved';totalMinor?:numb
 export function IdentityCard({handle,state,totalMinor=0,offerAvailable=true,quiet=false,variant='credit'}:CardProps){
   const {credit}=useCreditDisplay();const amount=credit(state==='reserved'?totalMinor:10000);
   const reduced=useReducedMotion();const frame=useRef<number|null>(null),stage=useRef<HTMLDivElement>(null);
-  const [paused,setPaused]=useState(false),[visible,setVisible]=useState(true);
+  const [paused,setPaused]=useState(false),[visible,setVisible]=useState(true),[mounted,setMounted]=useState(false);
   const lineId=useId();
   const x=useMotionValue(0),y=useMotionValue(0);const rotateX=useSpring(x,{stiffness:300,damping:32}),rotateY=useSpring(y,{stiffness:300,damping:32});
   const lightX=useTransform(rotateY,[-7,7],['25%','75%']);const lightY=useTransform(rotateX,[-5,5],['70%','30%']);
-  const title=handle||'yourname';const still=Boolean(reduced||quiet||paused||!visible);
+  // Match the server's static first frame before reading client motion preferences.
+  const title=handle||'yourname';const still=Boolean(!mounted||reduced||quiet||paused||!visible);
   const materialStyle:MotionStyle & {'--light-x':MotionValue<string>;'--light-y':MotionValue<string>}={rotateX:still?0:rotateX,rotateY:still?0:rotateY,'--light-x':lightX,'--light-y':lightY};
   function reset(){if(frame.current!==null){cancelAnimationFrame(frame.current);frame.current=null;}x.set(0);y.set(0);}
   useEffect(()=>{
+    setMounted(true);
     let inView=true;
     const sync=()=>setVisible(inView&&!document.hidden);
     const observer=new IntersectionObserver(([entry])=>{inView=Boolean(entry?.isIntersecting);sync();},{threshold:.1});

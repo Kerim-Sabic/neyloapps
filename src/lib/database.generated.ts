@@ -125,24 +125,24 @@ export type Database = {
           active_version: string
           allocated_founders: number
           id: string
-          rewards_ended_at: string | null
           paused: boolean
+          rewards_ended_at: string | null
           updated_at: string
         }
         Insert: {
           active_version: string
           allocated_founders?: number
           id: string
-          rewards_ended_at?: string | null
           paused?: boolean
+          rewards_ended_at?: string | null
           updated_at?: string
         }
         Update: {
           active_version?: string
           allocated_founders?: number
           id?: string
-          rewards_ended_at?: string | null
           paused?: boolean
+          rewards_ended_at?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -317,7 +317,7 @@ export type Database = {
       }
       enrollments: {
         Row: {
-          accepted_at: string
+          accepted_at: string | null
           campaign_id: string
           created_at: string
           eligibility: string
@@ -327,7 +327,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          accepted_at: string
+          accepted_at?: string | null
           campaign_id?: string
           created_at?: string
           eligibility: string
@@ -337,7 +337,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          accepted_at?: string
+          accepted_at?: string | null
           campaign_id?: string
           created_at?: string
           eligibility?: string
@@ -473,6 +473,36 @@ export type Database = {
           email?: string
           reason?: string
           review_required?: boolean
+        }
+        Relationships: []
+      }
+      payment_bank_formats: {
+        Row: {
+          country: string
+          iban_pattern: string
+        }
+        Insert: {
+          country: string
+          iban_pattern: string
+        }
+        Update: {
+          country?: string
+          iban_pattern?: string
+        }
+        Relationships: []
+      }
+      payment_currency_formats: {
+        Row: {
+          currency: string
+          minor_digits: number
+        }
+        Insert: {
+          currency: string
+          minor_digits: number
+        }
+        Update: {
+          currency?: string
+          minor_digits?: number
         }
         Relationships: []
       }
@@ -656,6 +686,109 @@ export type Database = {
         }
         Relationships: []
       }
+      receiving_account_events: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: number
+          target_id: string
+          version: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: never
+          target_id: string
+          version?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: never
+          target_id?: string
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receiving_account_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "receiving_account_events_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      receiving_accounts: {
+        Row: {
+          account_name: string
+          bank_country: string
+          bank_name: string
+          bic: string
+          currency: string
+          discoverable: boolean
+          iban: string
+          updated_at: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          account_name: string
+          bank_country?: string
+          bank_name: string
+          bic?: string
+          currency?: string
+          discoverable?: boolean
+          iban: string
+          updated_at?: string
+          user_id: string
+          version?: string
+        }
+        Update: {
+          account_name?: string
+          bank_country?: string
+          bank_name?: string
+          bic?: string
+          currency?: string
+          discoverable?: boolean
+          iban?: string
+          updated_at?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receiving_accounts_bank_country_fkey"
+            columns: ["bank_country"]
+            isOneToOne: false
+            referencedRelation: "payment_bank_formats"
+            referencedColumns: ["country"]
+          },
+          {
+            foreignKeyName: "receiving_accounts_currency_fkey"
+            columns: ["currency"]
+            isOneToOne: false
+            referencedRelation: "payment_currency_formats"
+            referencedColumns: ["currency"]
+          },
+          {
+            foreignKeyName: "receiving_accounts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           created_at: string
@@ -724,8 +857,6 @@ export type Database = {
     Functions: {
       neylo_account: { Args: { p_user_id: string }; Returns: Json }
       neylo_bootstrap_owner: { Args: { p_email: string }; Returns: string }
-      neylo_policy: { Args: { p_version: string }; Returns: Json }
-      neylo_pitch_metrics: { Args: never; Returns: Json }
       neylo_campaign: { Args: never; Returns: Json }
       neylo_classify: {
         Args: {
@@ -783,6 +914,8 @@ export type Database = {
         Returns: undefined
       }
       neylo_pending: { Args: { p_token_hash: string }; Returns: Json }
+      neylo_pitch_metrics: { Args: never; Returns: Json }
+      neylo_policy: { Args: { p_version: string }; Returns: Json }
       neylo_preferences: {
         Args: { p_analytics: boolean; p_marketing: boolean; p_user_id: string }
         Returns: undefined
@@ -812,6 +945,10 @@ export type Database = {
       neylo_rate_limit: {
         Args: { p_key: string; p_limit: number; p_window_seconds: number }
         Returns: boolean
+      }
+      neylo_receiving: {
+        Args: { p_action: string; p_data?: Json; p_user_id: string }
+        Returns: Json
       }
       neylo_reconcile: { Args: { p_actor: string }; Returns: Json }
       neylo_registered_accounts: {
@@ -845,6 +982,10 @@ export type Database = {
       }
       neylo_review_queue: { Args: { p_actor: string }; Returns: Json }
       neylo_valid_handle: { Args: { p_handle: string }; Returns: boolean }
+      neylo_valid_iban: {
+        Args: { p_country: string; p_iban: string }
+        Returns: boolean
+      }
     }
     Enums: {
       participant_cohort:

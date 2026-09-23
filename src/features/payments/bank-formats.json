@@ -1,0 +1,86 @@
+{
+  "BA": {
+    "name": "Bosnia and Herzegovina",
+    "defaultCurrency": "BAM",
+    "pattern": "BA39[0-9]{16}",
+    "example": "BA391290079401028494"
+  },
+  "AT": {
+    "name": "Austria",
+    "defaultCurrency": "EUR",
+    "pattern": "AT[0-9]{18}",
+    "example": "AT611904300234573201"
+  },
+  "CH": {
+    "name": "Switzerland",
+    "defaultCurrency": "CHF",
+    "pattern": "CH[0-9]{7}[A-Z0-9]{12}",
+    "example": "CH9300762011623852957"
+  },
+  "CZ": {
+    "name": "Czechia",
+    "defaultCurrency": "CZK",
+    "pattern": "CZ[0-9]{22}",
+    "example": "CZ6508000000192000145399"
+  },
+  "DE": {
+    "name": "Germany",
+    "defaultCurrency": "EUR",
+    "pattern": "DE[0-9]{20}",
+    "example": "DE89370400440532013000"
+  },
+  "DK": {
+    "name": "Denmark",
+    "defaultCurrency": "DKK",
+    "pattern": "DK[0-9]{16}",
+    "example": "DK5000400440116243"
+  },
+  "FR": {
+    "name": "France",
+    "defaultCurrency": "EUR",
+    "pattern": "FR[0-9]{12}[A-Z0-9]{11}[0-9]{2}",
+    "example": "FR1420041010050500013M02606"
+  },
+  "GB": {
+    "name": "United Kingdom",
+    "defaultCurrency": "GBP",
+    "pattern": "GB[0-9]{2}[A-Z]{4}[0-9]{14}",
+    "example": "GB29NWBK60161331926819"
+  },
+  "HR": {
+    "name": "Croatia",
+    "defaultCurrency": "EUR",
+    "pattern": "HR[0-9]{19}",
+    "example": "HR1210010051863000160"
+  },
+  "NL": {
+    "name": "Netherlands",
+    "defaultCurrency": "EUR",
+    "pattern": "NL[0-9]{2}[A-Z]{4}[0-9]{10}",
+    "example": "NL91ABNA0417164300"
+  },
+  "NO": {
+    "name": "Norway",
+    "defaultCurrency": "NOK",
+    "pattern": "NO[0-9]{13}",
+    "example": "NO9386011117947"
+  },
+  "PL": {
+    "name": "Poland",
+    "defaultCurrency": "PLN",
+    "pattern": "PL[0-9]{26}",
+    "example": "PL61109010140000071219812874"
+  },
+  "SE": {
+    "name": "Sweden",
+    "defaultCurrency": "SEK",
+    "pattern": "SE[0-9]{22}",
+    "example": "SE4550000000058398257466"
+  },
+  "SI": {
+    "name": "Slovenia",
+    "defaultCurrency": "EUR",
+    "pattern": "SI[0-9]{17}",
+    "example": "SI56263300012039086"
+  }
+}

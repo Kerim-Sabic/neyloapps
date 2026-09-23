@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Neylo · Payment sandbox</title><link rel="stylesheet" href="/app.css">
+<main><p class="badge">LOCAL SANDBOX · SIMULATED MONEY ONLY</p><h1>Send to @bob</h1><p>Fixture sender: Alice. Fixture recipient: Bob. No bank connection, real identity, or real funds.</p>
+<form id="send"><label for="amount">Amount in BAM (0.01–100.00)</label><input id="amount" inputmode="decimal" value="50.00" required><button>Create transfer</button></form>
+<p id="status" role="status">Ready. Funding is confirmed separately from recipient access.</p><button id="new-intent" type="button">Start a separate transfer</button>
+<section aria-label="Simulated bank controls"><h2>Simulated bank controls</h2><p>These controls generate test events. They do not authorize real payments.</p>
+<div id="controls"><button data-action="fund" disabled>Confirm funding</button><button data-action="pay" disabled>Confirm recipient credit</button><button data-action="lose-response" disabled>Lose payout response</button><button data-action="recover" disabled>Recover original payout</button><button data-action="fail" disabled>Reject payout</button><button data-action="refund" disabled>Confirm refund</button></div></section>
+<h2>Control ledger and reconciliation</h2><pre id="report">No transfer yet.</pre><p>After a restart, recover the last transfer by reopening this page in the same browser. Restart rotates the local session.</p></main><script src="/app.js"></script></html>

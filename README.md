@@ -1,3 +1,74 @@
+## New: real two-account local pilot
+
+You can now exercise **signup → real local email verification → save receiving account → another user pays by @handle** against local Supabase, without mocked API responses. Money movement remains disabled.
+
+```sh
+npm run pilot:setup
+npm run pilot:local
+# App: http://127.0.0.1:3100 · Local email inbox: http://127.0.0.1:55424
+# Stop the app, then run the repeatable integration check:
+npm run pilot:test
+```
+
+Use fictional accounts only. [Pilot walkthrough, verified behavior and remaining release gates](docs/local-pilot.md). The test uses real OTP cooldowns, takes around 70 seconds, and is included in GitHub Actions. Database advisors passed locally; database types now come from the actual migrated schema. Hosted staging and live transfers remain pending.
+
+## New: Bosnia first, international by design
+
+The username flow now carries **bank country + account currency**, with BAM as the default. Account owners choose the currency their account actually accepts; senders get it automatically through the username.
+
+- **152 currency definitions** with exact amounts, including USD, EUR, GBP, CHF, JPY and KWD. This is money-format support, not 152 live payment routes.
+- **14 reviewed IBAN country formats**, with matching browser/server/database checks.
+- **No silent FX:** no conversion or exchange-rate quote is implied; account changes invalidate old preparation attempts.
+- **Try it:** `/pay/preview` → **alex** for EUR, **maya** for GBP, **nadin** for BAM.
+- **Still gated:** production storage, global eligibility and all live transfers. Other account formats explicitly show unavailable.
+
+[International scope, evidence and rollout stages](docs/international-expansion.md)
+
+![International username preview with an example euro recipient](docs/assets/international-payments.png)
+
+## New: pay a person, not an account number
+
+**Add your bank once → friends enter @username → receiving details fill automatically.**
+
+- **Account setup:** save an account-holder name, bank country, account currency, IBAN, bank and optional SWIFT/BIC behind your reserved username.
+- **Username-first send:** authenticated exact-handle lookup, recipient card, amount and review. Expand the receiving route to see the bank and masked account.
+- **Safe updates:** explicit sharing opt-in, recent sign-in for changes, rate limits and revision checks before revealing instructions.
+- **Honest status:** recipient-supplied accounts remain unverified. Users authorize in their own bank; Neylo cannot yet execute transfers.
+
+[Username feature & rollout guide](docs/username-payments.md) · [Bank/PSP integration guide](docs/payment-integration-guide.md)
+
+Run locally and open `/pay/preview`, then try **@nadin** for an explicitly labeled example. Real `/pay` lookup uses authenticated accounts and requires the new reviewed migration plus server-only `RECEIVING_ACCOUNTS_ENABLED=true`. **The migration has not been applied to production.**
+
+![Username-first Neylo preview, using example recipient data](docs/assets/username-payments.png)
+
+## Manual bank-instruction fallback
+
+**Prepare → review → finish in your bank.** The new `/pay` experience helps users prepare small BAM payments with clear recipient details, copyable bank instructions and a downloadable plan. Its responsive sapphire interface includes accessible controls, short transitions and reduced-motion support.
+
+![Neylo payment planner, showing an illustrative payment review](docs/assets/payment-planner.png)
+
+| Works now in this branch | Still requires an approved provider |
+| :--- | :--- |
+| Recipient name + supported IBAN format/checksum validation | Bank-verified account ownership |
+| Exact 1–100 account-currency units and review | Bank/card funding authorization |
+| Copy instructions and download a private payment plan | Integrated execution and recipient payout |
+| Personal “reported sent” status, explicitly unconfirmed | Authoritative bank status, reconciliation and refunds |
+| In-memory-only entries; no bank details uploaded or saved | Durable authenticated payment history |
+
+**No money is sent by Neylo.** Users authorize separately in their own bank app. A valid checksum is not account verification, a plan is not a receipt, and “reported sent” is not bank confirmation. No live provider or production deployment is included in this update.
+
+**Start here:** [What changed & how to try it](docs/payment-planner.md) · [Bank/PSP integration guide](docs/payment-integration-guide.md) · [Payment research](docs/bam-launch-decision.md) · [Local contract simulator](docs/payment-sandbox.md)
+
+```sh
+npm ci
+npm run dev
+# Open http://127.0.0.1:3100/pay
+```
+
+The manual fallback and labeled preview need no Supabase or payment-provider credentials. Existing account features retain their normal configuration. Verify with `npm run check`; install Chromium with `npx playwright install chromium`, then run `npm run test:browser`. Browser coverage includes desktop, mobile/reduced motion, accessibility, exports and data staying out of network requests and browser storage.
+
+---
+
 <p align="center">
   <a href="https://neylo.xyz">
     <img src="docs/assets/neylo-hero.gif" width="1200" alt="NEYLO — One address for money. An animated sapphire identity card and a journey from identity to destination. Join the waitlist." />

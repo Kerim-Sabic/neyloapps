@@ -14,3 +14,32 @@ jobs:
       - run: npm ci
       - run: npx next typegen
       - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-evidence
+          path: test-results/
+          retention-days: 7
+
+  local-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run pilot:setup
+      - run: npm run pilot:test
+      - run: npx supabase db advisors --local
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: local-pilot-summary
+          path: test-results/pilot/summary.json
+          retention-days: 7

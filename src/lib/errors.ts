@@ -1,4 +1,7 @@
 export const messages: Record<string,string> = {
+  RECEIVING_UNAVAILABLE:'Saved receiving accounts are not enabled yet. Your reserved username is safe.',
+  DESTINATION_CHANGED:'These bank details changed. Reload the account or look up the recipient again before continuing.',
+  RECIPIENT_UNAVAILABLE:'This recipient is not currently available for bank instructions. Look them up again.',
   UNAVAILABLE:'Enrollment is being prepared. Please come back soon.',
   CAMPAIGN_PAUSED:'New reservations are paused. Your existing account and credits remain available.',
   CAMPAIGN_CLOSED:'This offer has closed. Please check the latest campaign terms.',
@@ -15,7 +18,7 @@ export const messages: Record<string,string> = {
   EMAIL_UNAVAILABLE:'The email provider could not accept your request. Your handle is held; try sending the code again.',
   UNAUTHENTICATED:'Sign in to continue.', ACCOUNT_REQUIRED:'Finish reserving your handle to continue.',
   FORBIDDEN:'You do not have access to this page or action.',
-  REAUTH_REQUIRED:'Please sign in again to confirm this administrative change.',
+  REAUTH_REQUIRED:'Please sign in again to confirm this sensitive change.',
   INVALID_INPUT:'Check the form and try again.', INVALID_ORIGIN:'This request must come from the NEYLO application.',
   IDENTITY_MISMATCH:'Use the verified email associated with this account.',
   IDENTITY_REQUIRED:'Email verification is required.', VERIFIED_IDENTITY_REQUIRED:'Verify your email before completing your account.',

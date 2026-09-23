@@ -10,9 +10,12 @@ import { getAccount,preferences,qualification,deletion } from '@/features/accoun
 import { adminRole,getMetrics,getRegisteredAccounts,queue,reconcile,mutateAdmin } from '@/features/admin/service';
 import { metricsCsv } from '@/features/admin/csv';
 import { getCurrencyDisplay } from '@/features/currency/service';
+import { getReceivingAccount, saveReceivingAccount, removeReceivingAccount, lookupRecipient, prepareRecipient } from '@/features/payments/receiving-service';
 
 export const dynamic='force-dynamic';
 const posts:Record<string,(input:unknown)=>Promise<unknown>>={
+  'account/receiving':saveReceivingAccount,'account/receiving/remove':removeReceivingAccount,
+  'payments/recipient':lookupRecipient,'payments/recipient/prepare':prepareRecipient,
   'signup/start':startClaim,'signup/verify':verifyClaim,'signup/resend':resendClaim,'signup/finalize':finalizeClaim,
   'auth/signin':signin,'auth/verify':verifySignin,'auth/signout':signout,
   'account/preferences':preferences,'account/qualification':qualification,'account/deletion':deletion,
@@ -34,6 +37,7 @@ async function get(path:string,url:URL){
   if(path==='invitation'){const code=invitationCodeSchema.parse(url.searchParams.get('code'));const invitation=await rpcResult(database().rpc('neylo_invitation',{p_code:code}),invitationSchema.nullable());if(!invitation)throw new AppError('NOT_FOUND',404);return invitation;}
   if(path==='signup/pending')return {pending:await pendingClaim()};
   if(path==='account')return getAccount();
+  if(path==='account/receiving')return getReceivingAccount();
   if(path==='admin/role')return {role:(await adminRole()).role};
   if(path==='admin/accounts')return getRegisteredAccounts(Object.fromEntries(url.searchParams));
   if(path==='admin/metrics'||path==='admin/export')return getMetrics(Object.fromEntries(url.searchParams));
