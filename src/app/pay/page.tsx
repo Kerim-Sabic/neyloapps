@@ -3,7 +3,7 @@ import { PaymentWorkspace } from '@/features/payments/payment-workspace';
 
 export const metadata: Metadata = {
   title: 'Prepare a bank payment',
-  description: 'Prepare clear BAM payment instructions. Authorize the payment separately in your bank app.',
+  description: 'Prepare payment instructions by username, with account-specific countries and currencies. Authorize the payment separately in your bank app.',
   alternates: { canonical: '/pay' },
   robots: { index: false, follow: false },
 };

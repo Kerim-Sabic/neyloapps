@@ -2,11 +2,11 @@
 
 ## What changed
 
-The default `/pay` journey now asks for **@username**, not an IBAN. An account owner adds their personal BAM receiving account once in **My account → Set up receiving account** (`/account/receiving`). The destination is bound to their authenticated profile ID and existing reserved handle on the server. Users cannot supply another person's profile ID or claim a different username in this form.
+The default `/pay` journey now asks for **@username**, not an IBAN. An account owner adds their personal receiving account once in **My account → Set up receiving account** (`/account/receiving`). The destination is bound to their authenticated profile ID and existing reserved handle on the server. Users cannot supply another person's profile ID or claim a different username in this form.
 
-The owner supplies account-holder name, Bosnian IBAN, bank selection (or a custom bank name), and optional SWIFT/BIC. The app checks IBAN structure/checksum and BIC syntax; it does not verify ownership, existence or that the selected bank matches the IBAN/BIC. No guessed bank-code mapping is used. The bank list is a convenience selector based on [CBBH](https://www.cbbh.ba/content/read/7), not a coverage directory. Automatic bank identification should use a maintained, verified directory later.
+The owner supplies account-holder name, bank country, account currency, supported IBAN, bank selection (or a custom bank name), and optional SWIFT/BIC. The app checks IBAN structure/checksum and BIC syntax; it does not verify ownership, existence or that the selected bank matches the IBAN/BIC. No guessed bank-code mapping is used. The bank list is a convenience selector based on [CBBH](https://www.cbbh.ba/content/read/7), not a coverage directory. Automatic bank identification should use a maintained, verified directory later.
 
-Only domestic BAM bank instructions are supported. Additional international addresses, correspondent banks, card funding, wallet routes and currencies are intentionally not collected or advertised without an approved route that requires them.
+International IBAN instruction formats and currency-aware amounts are now supported. See [international scope and rollout](international-expansion.md) for the exact 14 formats and 152 currency definitions. Additional beneficiary/intermediary requirements are not modeled as a complete cross-border payment order. Currency selection is not a live transfer capability.
 
 ## Owner journey
 
@@ -20,7 +20,7 @@ One account per user is supported in this first version. It remains `self_declar
 ## Sender journey
 
 1. Enter the exact @handle. No fuzzy search or public recipient directory.
-2. See the recipient's supplied account-holder name and handle. Expand the receiving route to see bank, BAM currency and last four account digits.
+2. See the recipient's supplied account-holder name and handle. Expand the receiving route to see bank, declared account currency and last four account digits.
 3. Enter amount and review. Bank numbers are not typed by the sender.
 4. On preparation, the server rechecks opt-in and destination revision before returning complete bank instructions. Changes/removal cause a retry, not silent redirection.
 5. Authorize separately in the sender's bank app. Neylo still cannot execute or confirm the transfer. The manual-entry planner remains an explicit fallback for recipients without a saved route.
@@ -40,7 +40,7 @@ Because no payment provider is connected, account details still appear in final 
 
 This delivery **does not apply the migration or enable collection in production**.
 
-1. Review `supabase/migrations/20260923224458_receiving_accounts.sql` in a staging Supabase project. Back up and review grants/retention before applying it through the normal migration process.
+1. Review `supabase/migrations/20260923224458_receiving_accounts.sql` and the following international receiving-accounts migration in a staging Supabase project. Back up and review grants/retention before applying it through the normal migration process.
 2. Keep existing authentication, same-origin and rate-limit configuration. Set server-only `RECEIVING_ACCOUNTS_ENABLED=true` only after the migration and privacy notice are ready.
 3. Test with two actual staged authenticated users: owner saves/opts in; sender finds owner; stale revision fails; private/removed account cannot be found; owner signs in again before changing details.
 4. Run Supabase security advisors and regenerate database types from that migrated environment. This branch includes the RPC type declaration; full hosted schema generation is still a staging task.
@@ -50,7 +50,7 @@ If the flag is absent, saving and lookup fail closed. The manual planner and res
 
 ## Review without accounts
 
-`/pay/preview` is an explicitly labeled offline design preview. Enter **nadin**. It uses an illustrative account number and no receiving-account API, database, authentication bypass or real recipient. Do not send money to fixture details. It is separate from `/pay`, whose username lookups require real authentication and enabled storage.
+`/pay/preview` is an explicitly labeled offline design preview. Enter **nadin** (BAM), **alex** (EUR), or **maya** (GBP). It uses an illustrative account number and no receiving-account API, database, authentication bypass or real recipient. Do not send money to fixture details. It is separate from `/pay`, whose username lookups require real authentication and enabled storage.
 
 ## Validation boundaries
 

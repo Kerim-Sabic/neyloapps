@@ -68,7 +68,7 @@ test('validation and editing do not preserve stale recipient confirmation', asyn
   await recipient(page);
   await page.getByLabel('Payment amount').fill('1e2');
   await page.getByRole('button', { name: 'Review payment' }).click();
-  await expect(page.getByRole('main').getByRole('alert')).toContainText('1.00 to 100.00');
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('1 to 100 BAM');
   await page.getByLabel('Payment amount').fill('25,10');
   await page.getByRole('button', { name: 'Review payment' }).click();
   await page.getByRole('checkbox', { name: 'I checked' }).check();

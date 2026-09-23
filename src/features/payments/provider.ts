@@ -1,7 +1,12 @@
+import type { Currency } from './international';
+
+export type ApprovedCorridor = { senderCountry:string; recipientCountry:string; bankCountry:string; currency:Currency };
 /** Contract for a future server-side adapter. Never implement execution in the UI. */
 export type ProviderCapabilities = {
   providerId: string;
+  /** Legacy display hint; execution authorization uses exact corridors. */
   domesticBamP2P: boolean;
+  corridors: readonly ApprovedCorridor[];
   funding: readonly ('bank_authorization' | 'hosted_card' | 'partner_wallet')[];
   payout: readonly ('bank_account' | 'partner_wallet')[];
   recipientVerification: boolean;
@@ -9,7 +14,7 @@ export type ProviderCapabilities = {
 };
 
 export const paymentCapabilities: ProviderCapabilities = Object.freeze({
-  providerId: 'not_connected', domesticBamP2P: false,
+  providerId: 'not_connected', domesticBamP2P: false, corridors:Object.freeze([]),
   funding: Object.freeze([]), payout: Object.freeze([]),
   recipientVerification: false, execution: false,
 });
@@ -22,7 +27,8 @@ export type ApprovedPayment = {
   verifiedRecipientId: string;
   quoteId: string;
   amountMinor: number;
-  currency: 'BAM';
+  currency: Currency;
+  corridor: ApprovedCorridor;
 };
 export type ProviderResult = {
   providerReference: string;
@@ -38,8 +44,8 @@ export interface PaymentProvider {
 }
 
 /** Fail closed, including when someone adds an execution environment variable. */
-export function assertExecutionAvailable(capabilities = paymentCapabilities): void {
-  if (!capabilities.execution || !capabilities.domesticBamP2P || !capabilities.recipientVerification || !capabilities.funding.length || !capabilities.payout.length) {
+export function assertExecutionAvailable(capabilities = paymentCapabilities, corridor:ApprovedCorridor={senderCountry:'BA',recipientCountry:'BA',bankCountry:'BA',currency:'BAM'}): void {
+  if (!capabilities.execution || !capabilities.corridors.some(c=>c.senderCountry===corridor.senderCountry&&c.recipientCountry===corridor.recipientCountry&&c.bankCountry===corridor.bankCountry&&c.currency===corridor.currency) || !capabilities.recipientVerification || !capabilities.funding.length || !capabilities.payout.length) {
     throw new Error('Integrated payments are not available.');
   }
 }

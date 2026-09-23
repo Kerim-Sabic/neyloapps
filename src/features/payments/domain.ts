@@ -1,3 +1,4 @@
+import { planAmount, formatMoney, validInternationalIban, type Currency, type BankCountry } from './international';
 /** Pure payment preparation. No network calls, custody, or execution. */
 export const MAX_AMOUNT_MINOR = 10_000;
 export const MIN_AMOUNT_MINOR = 100;
@@ -8,7 +9,8 @@ export type PaymentPlan = {
   createdAt: string;
   recipient: Recipient;
   amountMinor: number;
-  currency: 'BAM';
+  currency: Currency;
+  bankCountry?: BankCountry;
   note: string;
   recipientHandle?: string;
   bankName?: string;
@@ -57,14 +59,15 @@ export function validNote(value: string): boolean {
 }
 
 export function createPlan(input: {
-  name: string; iban: string; amount: string; note: string;
+  name: string; iban: string; amount: string; note: string; currency?: Currency; bankCountry?: BankCountry;
 }, id: string, createdAt: string): PaymentPlan {
-  const amountMinor = parseBam(input.amount);
-  if (!validName(input.name) || !validBosnianIban(input.iban) || amountMinor === null || !validNote(input.note)) {
+  const currency=input.currency??'BAM',bankCountry=input.bankCountry??'BA';
+  const amountMinor = planAmount(input.amount,currency);
+  if (!validName(input.name) || !validInternationalIban(input.iban,bankCountry) || amountMinor === null || !validNote(input.note)) {
     throw new Error('Check recipient, account, amount and payment purpose.');
   }
   if (!/^[a-f0-9-]{36}$/i.test(id) || !Number.isFinite(Date.parse(createdAt))) throw new Error('Invalid plan identity');
-  return { version: 1, id, createdAt, recipient: { name: input.name.trim(), iban: normalizeIban(input.iban) }, amountMinor, currency: 'BAM', note: input.note.trim() };
+  return { version: 1, id, createdAt, recipient: { name: input.name.trim(), iban: normalizeIban(input.iban) }, amountMinor, currency, bankCountry, note: input.note.trim() };
 }
 
 /** User reports can never produce an executed or settled payment state. */
@@ -82,9 +85,10 @@ export function instructions(plan: PaymentPlan, status: PlanStatus): string {
     ...(plan.bankName ? [`Bank (recipient supplied): ${plan.bankName}`] : []),
     ...(plan.bic ? [`SWIFT / BIC: ${plan.bic}`] : []),
     `IBAN: ${formattedIban(plan.recipient.iban)}`,
-    `Domestic account number: ${plan.recipient.iban.slice(4)}`,
-    `Payment amount: ${bam(plan.amountMinor)}`,
+    ...(plan.recipient.iban.startsWith('BA')&&plan.currency==='BAM'?[`Domestic account number: ${plan.recipient.iban.slice(4)}`]:[]),
+    `Payment amount: ${formatMoney(plan.amountMinor,plan.currency)}`,
     `Purpose: ${plan.note || 'Confirm the purpose with the recipient'}`,
+    'No FX quote is provided. Confirm account currency, any conversion, intermediary fees and additional fields with your bank.',
     'Bank fees and arrival time: check with your bank before authorizing.',
     'Recipient net amount: not confirmed by Neylo; bank fees may apply.',
     `Plan ID (not a bank reference): ${plan.id}`,

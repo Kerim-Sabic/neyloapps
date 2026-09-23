@@ -1,8 +1,22 @@
+## New: Bosnia first, international by design
+
+The username flow now carries **bank country + account currency**, with BAM as the default. Account owners choose the currency their account actually accepts; senders get it automatically through the username.
+
+- **152 currency definitions** with exact amounts, including USD, EUR, GBP, CHF, JPY and KWD. This is money-format support, not 152 live payment routes.
+- **14 reviewed IBAN country formats**, with matching browser/server/database checks.
+- **No silent FX:** no conversion or exchange-rate quote is implied; account changes invalidate old preparation attempts.
+- **Try it:** `/pay/preview` → **alex** for EUR, **maya** for GBP, **nadin** for BAM.
+- **Still gated:** production storage, global eligibility and all live transfers. Other account formats explicitly show unavailable.
+
+[International scope, evidence and rollout stages](docs/international-expansion.md)
+
+![International username preview with an example euro recipient](docs/assets/international-payments.png)
+
 ## New: pay a person, not an account number
 
 **Add your bank once → friends enter @username → receiving details fill automatically.**
 
-- **Account setup:** save an account-holder name, BAM IBAN, bank and optional SWIFT/BIC behind your reserved username.
+- **Account setup:** save an account-holder name, bank country, account currency, IBAN, bank and optional SWIFT/BIC behind your reserved username.
 - **Username-first send:** authenticated exact-handle lookup, recipient card, amount and review. Expand the receiving route to see the bank and masked account.
 - **Safe updates:** explicit sharing opt-in, recent sign-in for changes, rate limits and revision checks before revealing instructions.
 - **Honest status:** recipient-supplied accounts remain unverified. Users authorize in their own bank; Neylo cannot yet execute transfers.
@@ -21,8 +35,8 @@ Run locally and open `/pay/preview`, then try **@nadin** for an explicitly label
 
 | Works now in this branch | Still requires an approved provider |
 | :--- | :--- |
-| Recipient name + Bosnian IBAN checksum validation | Bank-verified account ownership |
-| Exact 1–100 BAM amount entry and review | Bank/card funding authorization |
+| Recipient name + supported IBAN format/checksum validation | Bank-verified account ownership |
+| Exact 1–100 account-currency units and review | Bank/card funding authorization |
 | Copy instructions and download a private payment plan | Integrated execution and recipient payout |
 | Personal “reported sent” status, explicitly unconfirmed | Authoritative bank status, reconciliation and refunds |
 | In-memory-only entries; no bank details uploaded or saved | Durable authenticated payment history |
